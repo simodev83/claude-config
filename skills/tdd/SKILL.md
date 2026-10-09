@@ -1,12 +1,12 @@
 ---
 name: tdd
-description: Sviluppo guidato dai test (TDD) - prima un test che fallisce, poi il minimo codice per farlo passare, una fetta alla volta; per i bug, prima un test che riproduce l'errore. Usala quando l'utente scrive /tdd o chiede di lavorare "test first" o "red-green", e quando la skill implementa esegue un passo in modalità TDD.
+description: Sviluppo guidato dai test (TDD) - prima un test che fallisce, poi il minimo codice per farlo passare, una fetta alla volta; per i bug, prima un test che riproduce l'errore. Usala quando l'utente scrive /tdd o chiede di lavorare "test first" o "red-green"; la carica anche l'agente costruttore per ogni passo del piano.
 argument-hint: "[cosa costruire o bug da correggere]"
 ---
 
 # TDD: prima il test, poi il codice
 
-Obiettivo: $ARGUMENTS (se la skill è stata caricata da `implementa`, l'obiettivo è il passo in corso).
+Obiettivo: $ARGUMENTS (dentro un passo del piano, l'obiettivo è il passo).
 
 Il TDD è un ciclo **rosso → verde**:
 
@@ -16,26 +16,34 @@ Il TDD è un ciclo **rosso → verde**:
 
 Poi il pezzetto successivo.
 
-## Se sei stata caricata da `implementa`
+Il codice si scrive sempre così: non esiste una modalità "prima il codice, poi i test".
 
-Segui solo il ciclo e le regole qui sotto per il passo in corso, usando i punti di test della spec. Preparazione, commit e consegna restano compito di `implementa`: ignora la sezione "Se usi questa skill da sola".
+## Dentro un passo del piano
+
+Di solito ti carica l'agente `costruttore`, per un solo passo. Segui il ciclo e le regole qui sotto con i punti di test dell'incarico. Cartella, ramo, commit e rapporto li regola l'agente: ignora la sezione "Se usi questa skill da sola".
 
 ## Se usi questa skill da sola
 
-Quando l'utente lancia `/tdd` direttamente, senza `implementa`:
+Quando l'utente lancia `/tdd` direttamente, senza spec né piano:
 
-1. Carica la skill `archivio` ed esegui il suo controllo iniziale.
-2. Se il progetto usa git, lavora su un ramo `fix/<nome>` (bug) o `feature/<nome>` (novità), con `<nome>` scritto secondo le regole del nome breve. Crealo come nel passo 1 di `implementa`: prima `git status` (se ci sono modifiche non salvate, fermati e chiedi cosa farne), poi ramo principale aggiornato con `git pull --ff-only`, poi `git switch -c`. Se l'utente preferisce restare sul ramo principale, rispetta la scelta: in quel caso alla fine non si apre una pull request.
-3. Individua come si lanciano i test del progetto. Se non ci sono test, proponi lo strumento più comune per lo stack e aspetta l'ok.
-4. Alla fine: fai girare **tutti** i test e, con git, fai il commit. Poi chiedi all'utente se consegnare il lavoro. Se sì, segui la sezione 10 ("Consegna del lavoro") della skill `archivio`, con questo corpo della pull request: cosa è cambiato, quali test lo verificano, e `Closes #<numero>` se il bug ha un'issue.
-5. Se il lavoro si rivela grande (più funzioni, decisioni da prendere), fermati e proponi `/workflow` o `/spec`.
+1. **Consegna.** Carica la skill `archivio` ed esegui il suo controllo iniziale (sezione 1), nella forma ridotta per `tdd` da sola: senza documenti, serve solo sapere come si consegna.
+2. **Dimensione.** Se il lavoro si rivela grande (più funzioni, decisioni da prendere, più di uno strato da circa 300 righe), fermati e proponi `/workflow` o `/spec`.
+3. **Nome e ramo.** Scegli tu il nome breve secondo la sezione 6 di `archivio`, perché non c'è una spec che lo fissi. Il ramo è `fix/<nome-breve>` per un bug, `feature/<nome-breve>` per una novità. Con git, prima di proporlo controlla `git worktree list` e `git branch --list "*/<nome-breve>*"`: se il nome è già usato, chiedi all'utente se è lo stesso lavoro da riprendere; se non lo è, scegline un altro.
+4. **Preparazione.** Guarda nel progetto come si installano le dipendenze, quali file locali servono (per esempio `.env`) e come si lanciano i test. Se non ci sono test, proponi lo strumento più comune per lo stack. Mostra all'utente, in parole semplici, nome breve, ramo, preparazione e comando di test, e **aspetta l'ok**.
+5. **Worktree.** Con git, apri il worktree come nella sezione 8 di `archivio`, con il ramo e la preparazione del punto 4; il passo 7 (documenti) non si applica. Senza git lavora direttamente sui file.
+6. **Punti di test**, poi il ciclo, come descritto sotto.
+7. **Verifica finale.** Fai girare **tutti** i test, più linter e controllo dei tipi se il progetto li ha. Con git, fai il commit dei soli file del lavoro, indicati per nome, con un messaggio che dice in una frase cosa cambia per chi usa il programma (per esempio `Il totale del carrello tiene conto dello sconto`).
+8. **Consegna.** Chiedi all'utente se consegnare il lavoro.
+   - Se sì, segui la sezione 10 di `archivio` con uno strato solo. Con consegna GitHub il titolo della pull request è il messaggio del commit, e il corpo dice: cosa è cambiato, quali test lo verificano, i controlli concreti fatti sui pezzi senza test, e `Closes #<numero>` se il bug ha un'issue.
+   - Se no, digli dove resta il lavoro (il ramo e la cartella del worktree) e che può riprenderlo rilanciando `/tdd` con lo stesso obiettivo.
+   - Con git, ricordagli infine che il worktree resta aperto: quando il lavoro è unito, o se vuole abbandonarlo, può chiedere a Claude di chiuderlo. La chiusura si fa solo su sua richiesta, come nella sezione 8 di `archivio` ("Chiusura"), che controlla da sé se il merge è avvenuto.
 
 ## Prima di scrivere il primo test: i punti di test
 
 Un **punto di test** è il confine esterno da cui si osserva il comportamento senza guardare dentro: una funzione pubblica, un endpoint, un comando. I test si scrivono **solo** lì.
 
-- Se arrivi da `implementa`, usa i punti di test della spec.
-- Altrimenti proponi tu i punti di test all'utente, in parole semplici, e **aspetta la conferma**. Non si scrive nessun test su un punto non confermato.
+- Dentro un passo del piano, usa i punti di test dell'incarico.
+- Da sola, proponi tu i punti di test all'utente, in parole semplici, e **aspetta la conferma**. Non si scrive nessun test su un punto non confermato.
 
 ## Correggere un bug
 
@@ -55,6 +63,6 @@ Il test resta nel progetto: se il bug dovesse tornare, se ne accorgerà subito.
 
 Per capire cosa rende buono un test ed evitare gli errori più comuni, leggi [test-buoni.md](test-buoni.md) prima del primo ciclo.
 
-## Quando il TDD non conviene
+## Pezzi senza un comportamento da provare
 
-Se l'obiettivo riguarda soprattutto l'aspetto grafico, una configurazione, uno script una tantum o un prototipo da buttare, dillo all'utente: il metodo classico (codice prima, poi un controllo) è più adatto. Procedi con il TDD solo se lui conferma.
+Alcuni pezzi non hanno un comportamento da osservare con un test: installare una dipendenza, scrivere un file di configurazione, l'aspetto grafico di una pagina. Falli e verificali con un controllo concreto (un comando che li usa, un'esecuzione, una schermata), poi dichiarali: nel rapporto del `costruttore`, oppure nel resoconto all'utente e nella pull request. Non sono un motivo per saltare i test sul resto: tutto ciò che ha un comportamento passa dal ciclo rosso → verde.
