@@ -20,4 +20,4 @@
 
 ## Quando simulare (mock)
 
-Simula solo ai **confini del sistema**: servizi esterni, invio di email, pagamenti, orologio di sistema. Non simulare i pezzi interni del tuo codice. Se per testare qualcosa devi simulare molte parti interne, è un segnale che il punto di test è nel posto sbagliato: parlane con l'utente.
+Simula solo ai **confini del sistema**: servizi esterni, invio di email, pagamenti, orologio di sistema. Non simulare i pezzi interni del tuo codice. Se per testare qualcosa devi simulare molte parti interne, è un segnale che il punto di test è nel posto sbagliato: fermati e chiedi all'utente (dentro un passo del piano, rispondi `BLOCCATO` con la domanda).

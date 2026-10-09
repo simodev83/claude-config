@@ -26,14 +26,17 @@ Di solito ti carica l'agente `costruttore`, per un solo passo. Segui il ciclo e 
 
 Quando l'utente lancia `/tdd` direttamente, senza spec né piano:
 
-1. **Archivio.** Carica la skill `archivio` ed esegui il suo controllo iniziale (sezione 1).
+1. **Consegna.** Carica la skill `archivio` ed esegui il suo controllo iniziale (sezione 1), nella forma ridotta per `tdd` da sola: senza documenti, serve solo sapere come si consegna.
 2. **Dimensione.** Se il lavoro si rivela grande (più funzioni, decisioni da prendere, più di uno strato da circa 300 righe), fermati e proponi `/workflow` o `/spec`.
-3. **Nome e ramo.** Scegli tu il nome breve secondo la sezione 6 di `archivio`, perché non c'è una spec che lo fissi. Il ramo è `fix/<nome-breve>` per un bug, `feature/<nome-breve>` per una novità.
+3. **Nome e ramo.** Scegli tu il nome breve secondo la sezione 6 di `archivio`, perché non c'è una spec che lo fissi. Il ramo è `fix/<nome-breve>` per un bug, `feature/<nome-breve>` per una novità. Con git, prima di proporlo controlla `git worktree list` e `git branch --list "*/<nome-breve>*"`: se il nome è già usato, chiedi all'utente se è lo stesso lavoro da riprendere; se non lo è, scegline un altro.
 4. **Preparazione.** Guarda nel progetto come si installano le dipendenze, quali file locali servono (per esempio `.env`) e come si lanciano i test. Se non ci sono test, proponi lo strumento più comune per lo stack. Mostra all'utente, in parole semplici, nome breve, ramo, preparazione e comando di test, e **aspetta l'ok**.
 5. **Worktree.** Con git, apri il worktree come nella sezione 8 di `archivio`, con il ramo e la preparazione del punto 4; il passo 7 (documenti) non si applica. Senza git lavora direttamente sui file.
 6. **Punti di test**, poi il ciclo, come descritto sotto.
-7. **Verifica finale.** Fai girare **tutti** i test, più linter e controllo dei tipi se il progetto li ha. Con git, fai il commit dei soli file del lavoro, indicati per nome.
-8. **Consegna.** Chiedi all'utente se consegnare il lavoro. Se sì, segui la sezione 10 di `archivio` con uno strato solo e questo corpo della pull request: cosa è cambiato, quali test lo verificano, i controlli concreti fatti sui pezzi senza test, e `Closes #<numero>` se il bug ha un'issue. Dopo il merge, chiudi il worktree come nella sezione 8 di `archivio`.
+7. **Verifica finale.** Fai girare **tutti** i test, più linter e controllo dei tipi se il progetto li ha. Con git, fai il commit dei soli file del lavoro, indicati per nome, con un messaggio che dice in una frase cosa cambia per chi usa il programma (per esempio `Il totale del carrello tiene conto dello sconto`).
+8. **Consegna.** Chiedi all'utente se consegnare il lavoro.
+   - Se sì, segui la sezione 10 di `archivio` con uno strato solo. Con consegna GitHub il titolo della pull request è il messaggio del commit, e il corpo dice: cosa è cambiato, quali test lo verificano, i controlli concreti fatti sui pezzi senza test, e `Closes #<numero>` se il bug ha un'issue.
+   - Se no, digli dove resta il lavoro (il ramo e la cartella del worktree) e che può riprenderlo rilanciando `/tdd` con lo stesso obiettivo.
+   - Con git, ricordagli infine che il worktree resta aperto: quando il lavoro è unito, o se vuole abbandonarlo, può chiedere a Claude di chiuderlo. La chiusura si fa solo su sua richiesta, come nella sezione 8 di `archivio` ("Chiusura"), che controlla da sé se il merge è avvenuto.
 
 ## Prima di scrivere il primo test: i punti di test
 

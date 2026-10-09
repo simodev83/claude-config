@@ -26,6 +26,8 @@ Lo stesso controllo decide anche la **consegna** del codice:
 
 Archivio e consegna si scelgono **una volta all'inizio di ogni skill**, con il controllo qui sotto, e non cambiano durante la skill.
 
+`tdd` usata da sola non salva documenti: del controllo le serve solo la consegna. Ignora le righe `Archivio workflow` e i fermi che dipendono dall'archivio (per esempio "il `CLAUDE.md` chiedeva `issues`"), salta i passi 6 e 7 e nella riga di stato ometti la parte `Archivio:`.
+
 ## 1. Controllo iniziale
 
 Leggi sempre il testo degli errori: dice quale caso si è verificato.
@@ -60,7 +62,7 @@ Leggi sempre il testo degli errori: dice quale caso si è verificato.
    - Il `CLAUDE.md` non dice nulla e `isInOrganization` è `true` → **chiedi** all'utente, in parole semplici: il repo appartiene a un'organizzazione, quindi le Issues le vedrebbe tutto il team; in alternativa i documenti possono restare solo su questo computer (Locale). Scrivi la risposta come riga `Archivio workflow: <scelta>` in `CLAUDE.local.md`, che è il file personale del progetto, e se `git check-ignore -q CLAUDE.local.md` fallisce aggiungi `/CLAUDE.local.md` alle esclusioni locali (sezione 5). Se però `git ls-files CLAUDE.local.md` stampa qualcosa, il file è già condiviso nel repo: chiedi all'utente dove scrivere la riga.
    - Altrimenti → archivio **Issues**.
    - Con archivio **Issues**, se `hasIssuesEnabled` è `false` → **FERMATI** e chiedi all'utente se preferisce attivare le Issues nel repo oppure usare l'archivio Locale (in quel caso suggerisci di aggiungere `Archivio workflow: locale` al `CLAUDE.local.md`).
-7. **Strumenti per la consegna** (solo per le skill che consegnano codice, `implementa` e `tdd`, e solo con consegna GitHub):
+7. **Strumenti per la consegna** (solo per `implementa`, e solo con consegna GitHub):
    - `jq --version` → se manca, **FERMATI** e chiedi di installarlo con `sudo apt install jq`.
    - `gh stack --version` → se manca, **FERMATI** e chiedi di installarlo con `gh extension install github/gh-stack`.
 
@@ -185,7 +187,7 @@ Un **worktree** è una seconda cartella dello stesso progetto, con un suo ramo: 
 - `<radice>`: la cartella principale del progetto, cioè la cartella che contiene la cartella stampata da `git rev-parse --path-format=absolute --git-common-dir` (funziona anche se sei già in un worktree).
 - `<percorso>`: `<radice>/.claude/worktrees/<nome-breve>`.
 - Un solo worktree per funzione: tutti gli strati vivono nello stesso worktree, uno dopo l'altro.
-- Con `tdd` usata da sola non c'è un piano: ramo, preparazione e comando di test sono quelli che la skill ha fatto confermare all'utente.
+- Con `tdd` usata da sola non c'è un piano: ramo, preparazione e comando di test sono quelli che la skill ha fatto confermare all'utente. Se il progetto non aveva test, lo strumento di test confermato si installa insieme alle dipendenze (passo 8), e alla verifica di partenza (passo 9) basta che si avvii, anche senza trovare test.
 
 ### Apertura
 
@@ -217,7 +219,7 @@ Si chiude il worktree solo quando il lavoro è unito al ramo principale, oppure 
 4. Se la sessione è nel worktree, esci con `ExitWorktree` e `action: "keep"`.
 5. `git worktree remove "<percorso>"`. Mai con `--force`: se si rifiuta, **fermati** e riporta l'errore.
 6. Per ogni ramo: `git branch -D <ramo>` (con `-D` perché un merge "squash" non risulta unito per git; il passo 1 garantisce che il lavoro è salvo o che l'utente ha confermato). Con consegna GitHub, se `git ls-remote --exit-code --heads origin <ramo>` lo trova ancora, `git push origin --delete <ramo>`.
-7. Cancella i corpi delle pull request della funzione (sezione 10): `rm -r "<cartella comune>/wf/<nome-breve>"`.
+7. Se esiste la cartella dei corpi delle pull request della funzione (sezione 10), cancellala: `rm -r "<cartella comune>/wf/<nome-breve>"`.
 8. Con consegna GitHub, se la `<radice>` è sul ramo principale e senza modifiche, aggiornala con `git -C "<radice>" pull --ff-only`.
 
 ## 9. Strati
