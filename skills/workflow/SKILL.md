@@ -58,9 +58,10 @@ Tutto ciò che ogni fase produce è salvato nell'archivio, quindi il lavoro può
 
 ## Fine
 
-Quando la pull request è aperta:
+Quando le pull request sono aperte (o il ramo è pronto):
 
-- riepiloga in poche righe: requisiti, spec, piano e pull request, con i collegamenti;
-- ricorda che il merge spetta all'utente e cosa controllare prima di farlo;
+- riepiloga in poche righe requisiti, spec e piano, con i collegamenti;
+- mostra le voci restituite da `implementa`: le pull request nell'ordine in cui unirle, la tabella dei criteri, revisione, strati divisi, pezzi senza test, cosa controllare e il worktree rimasto aperto;
+- ricorda che il merge spetta all'utente;
 - se restano altre funzioni dai requisiti, proponi la prossima con `/workflow <funzione>`;
 - se non ne restano, chiedi all'utente se chiudere i requisiti (issue `wf:requisiti` chiusa con un commento, oppure `Stato: chiuso` nel file).

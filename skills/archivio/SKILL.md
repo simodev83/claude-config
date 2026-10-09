@@ -191,7 +191,7 @@ Un **worktree** è una seconda cartella dello stesso progetto, con un suo ramo: 
 
 ### Apertura
 
-1. **Esiste già?** Se `git worktree list` mostra `<percorso>`, il lavoro è già iniziato: entra con lo strumento `EnterWorktree` passando `path: "<percorso>"` e salta al passo 9. Non crearne mai un secondo.
+1. **Esiste già?** Se `git worktree list` mostra `<percorso>`, il lavoro è già iniziato: entra con lo strumento `EnterWorktree` passando `path: "<percorso>"`. Non crearne mai un secondo. Poi lancia nel worktree `git status --porcelain`: se mostra qualcosa, il lavoro si era fermato a metà; **fermati**, mostra all'utente l'elenco in parole semplici e chiedi come procedere, senza annullare nulla e senza fare commit. Altrimenti salta al passo 9.
 2. **Modifiche non salvate.** Nella `<radice>` lancia `git status --porcelain`. Escludi dall'elenco solo spec e piano di questa funzione in modalità File. Se resta qualcosa, **fermati** e spiega all'utente in parole semplici: il lavoro partirà dall'ultima versione salvata del progetto e non conterrà queste modifiche. Chiedi se proseguire così o fermarsi perché le salvi lui. Non metterle mai da parte, non annullarle e non farne il commit tu.
 3. **Esclusione.** Aggiungi `/.claude/worktrees/` alle esclusioni locali (sezione 5).
 4. **Ramo.** È il ramo del primo strato, preso dal piano (sezione 9). Se `git rev-parse --verify --quiet "refs/heads/<ramo>"` lo trova già, **fermati** e chiedi all'utente se è lavoro vecchio da riprendere o da lasciare stare: non riusarlo e non cancellarlo da solo.
@@ -219,7 +219,7 @@ Si chiude il worktree solo quando il lavoro è unito al ramo principale, oppure 
 4. Se la sessione è nel worktree, esci con `ExitWorktree` e `action: "keep"`.
 5. `git worktree remove "<percorso>"`. Mai con `--force`: se si rifiuta, **fermati** e riporta l'errore.
 6. Per ogni ramo: `git branch -D <ramo>` (con `-D` perché un merge "squash" non risulta unito per git; il passo 1 garantisce che il lavoro è salvo o che l'utente ha confermato). Con consegna GitHub, se `git ls-remote --exit-code --heads origin <ramo>` lo trova ancora, `git push origin --delete <ramo>`.
-7. Se esiste la cartella dei corpi delle pull request della funzione (sezione 10), cancellala: `rm -r "<cartella comune>/wf/<nome-breve>"`.
+7. Se esiste la cartella di lavoro della funzione (corpi delle pull request della sezione 10 e file di stato della skill `implementa`), cancellala: `rm -r "<cartella comune>/wf/<nome-breve>"`.
 8. Con consegna GitHub, se la `<radice>` è sul ramo principale e senza modifiche, aggiornala con `git -C "<radice>" pull --ff-only`.
 
 ## 9. Strati
@@ -249,7 +249,7 @@ Uno **strato** è un pezzo del lavoro con un solo scopo, abbastanza piccolo da r
 
 **Dopo una correzione** su uno strato sotto, fai girare tutti i test su quello strato e su ogni strato sopra (`gh stack up` da uno all'altro), poi torna in cima con `gh stack top`.
 
-**Conflitti.** Se `gh stack rebase` termina con codice 3, c'è un conflitto: leggi nel messaggio i file in conflitto, risolvi i segni `<<<<<<<`, `=======`, `>>>>>>>`, aggiungi i file con `git add <file>` e lancia `gh stack rebase --continue`. Se non riesci a risolverlo con certezza, `gh stack rebase --abort` (riporta tutti i rami a prima) e **fermati**.
+**Conflitti.** Se `gh stack rebase` termina con codice 3, c'è un conflitto (la skill `implementa` dice quando il regista può risolverlo): leggi nel messaggio i file in conflitto, risolvi i segni `<<<<<<<`, `=======`, `>>>>>>>`, aggiungi i file con `git add <file>` e lancia `gh stack rebase --continue`. Se non riesci a risolverlo con certezza, `gh stack rebase --abort` (riporta tutti i rami a prima) e **fermati**.
 
 ## 10. Consegna del lavoro
 

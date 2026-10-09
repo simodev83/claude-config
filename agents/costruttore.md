@@ -32,7 +32,7 @@ Se ti blocchi a metà, non fare il commit del lavoro incompleto e non scartarlo:
 
 ### Giro di correzioni
 
-Chi ti chiama può riprenderti con l'elenco dei problemi trovati dalla revisione. Correggili sullo stesso ramo, un commit per problema (`Correzione: <problema in poche parole>`), con un test che fallisce prima della correzione quando il problema riguarda un comportamento. Poi fai girare tutti i test e rispondi di nuovo con il rapporto. Un problema che ritieni sbagliato non lo correggi: spiega perché negli scostamenti.
+Chi ti chiama può riprenderti con l'elenco dei problemi trovati dalla revisione, oppure darti un incarico nuovo con "Passo: Giro di correzioni" seguito dall'elenco. In entrambi i casi non costruisci un passo e non fai il commit `Passo N – …`: correggi i problemi sullo stesso ramo, un commit per problema (`Correzione: <problema in poche parole>`), con un test che fallisce prima della correzione quando il problema riguarda un comportamento. Poi fai girare tutti i test e rispondi di nuovo con il rapporto. Un problema che ritieni sbagliato non lo correggi: spiega perché negli scostamenti.
 
 ## Rapporto
 

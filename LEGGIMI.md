@@ -10,7 +10,7 @@ La mia configurazione di Claude Code: questa cartella è `~/.claude`. Contiene i
 | piano | `/piano <funzione>` | Passi piccoli e verificabili raggruppati in strati, scelta dello stack, preparazione del worktree |
 | implementa | `/implementa <funzione>` | Il regista della costruzione: worktree, un costruttore per passo, semplificazione e revisione per strato, collaudo finale, una pull request per strato |
 | tdd | `/tdd <obiettivo>` | Ciclo rosso → verde, sempre; la usa il costruttore per ogni passo, e da sola per un bug o una piccola modifica |
-| archivio | — | Regole interne: dove salvare (GitHub Issues o `docs/workflow/`). Non si lancia a mano |
+| archivio | — | Regole interne: dove salvare i documenti (GitHub Issues, `docs/workflow/` o cartella locale), worktree, strati e consegna. Non si lancia a mano |
 
 ## Agenti
 
