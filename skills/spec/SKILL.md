@@ -14,7 +14,7 @@ La spec è il **contratto**: dice esattamente cosa deve fare la funzione e come 
 
 1. Carica la skill `archivio` ed esegui il suo controllo iniziale.
 2. Cerca i requisiti collegati (etichetta `wf:requisiti`, o `<cartella>/requisiti-*.md`; `<cartella>` è `docs/workflow/` per File, `.claude/specs/` per Locale, come nella sezione 4 della skill `archivio`) e leggili.
-3. Esplora il codice esistente per capire dove si inserisce la funzione e quali convenzioni usa il progetto (nomi, struttura, test già presenti).
+3. Esplora il codice esistente per capire dove si inserisce la funzione e quali convenzioni usa il progetto (nomi, struttura, test già presenti). Per sapere cosa permette una libreria o un servizio usa l'agente `ricercatore`, come nel passo 1 della skill `piano`.
 
 ## Passo 1: niente nuovo interrogatorio
 
@@ -32,7 +32,12 @@ Proponi i punti di test, preferendo quelli già esistenti e il più "in alto" po
 
 ## Passo 3: scrivi la spec
 
-Scegli il **nome breve** della funzione (regole nella sezione 6 della skill `archivio`, per esempio `export-csv`) e scrivilo in testa alla spec: lo useranno piano, ramo e file.
+Scegli il **nome breve** della funzione (regole nella sezione 6 della skill `archivio`, per esempio `export-csv`) e scrivilo in testa alla spec: lo useranno piano, ramo e file. Prima controlla che sia libero:
+
+- nell'archivio: con Issues `gh issue list --label "wf:spec" --state all --search "\"Nome breve: <nome-breve>\""`, con File o Locale il file `<cartella>/spec/<nome-breve>.md`;
+- con git: il worktree `.claude/worktrees/<nome-breve>` in `git worktree list` e i rami di `git branch --list "*/<nome-breve>*"`.
+
+Se è già usato per la stessa funzione, chiedi all'utente se aggiornare la spec esistente; altrimenti scegline un altro.
 
 ```markdown
 Nome breve: <nome-breve>
@@ -70,7 +75,7 @@ Nome breve: <nome-breve>
 
 Regole:
 
-- **Criteri verificabili.** Ogni criterio deve poter diventare un test o un controllo concreto. "Deve essere veloce" non va bene; "la pagina si carica in meno di 2 secondi con 1.000 prenotazioni" sì.
+- **Criteri verificabili.** Ogni criterio deve poter diventare un test o un controllo concreto. "Deve essere veloce" non va bene; "la pagina si carica in meno di 2 secondi con 1.000 prenotazioni" sì. Nel collaudo finale ogni criterio dovrà avere la sua prova: un test che passa o un controllo concreto.
 - **Niente percorsi di file né codice** nelle decisioni tecniche: invecchiano in fretta. Descrivi moduli e interfacce.
 - **Tutto il perimetro della funzione, niente di più.** Quello che resta fuori va scritto in "Fuori perimetro".
 

@@ -43,8 +43,8 @@ A ogni round:
 
 Regole:
 
-- **I fatti li cerchi tu, le decisioni le prende l'utente.** Non chiedere mai qualcosa che puoi scoprire leggendo il codice, la configurazione o la documentazione (versioni, librerie usate, struttura esistente). Se serve una ricerca lunga, affidala a un sotto-agente e intanto poni le domande che non ne dipendono.
-- **Consiglia sempre.** Ogni domanda ha la tua risposta consigliata, così l'utente può rispondere "ok" dove è d'accordo.
+- **I fatti li cerchi tu, le decisioni le prende l'utente.** Non chiedere mai qualcosa che puoi scoprire leggendo il codice, la configurazione o la documentazione (versioni, librerie usate, struttura esistente). Per sapere cosa dice la documentazione di una libreria o di un servizio usa l'agente `ricercatore`: una domanda per agente, con la versione presa dal file delle dipendenze; le domande indipendenti lanciale insieme e, se una risposta è `NON VERIFICATO`, dillo all'utente così com'è. Per un'esplorazione ampia del codice usa un sotto-agente. Intanto poni le domande che non dipendono dalla ricerca.
+- **Consiglia sempre.** Ogni domanda ha la tua risposta consigliata, così l'utente può rispondere "ok" dove è d'accordo. Quando ci sono più opzioni, ordinale secondo le regole del `CLAUDE.md` sulle decisioni.
 - **Spiega i termini tecnici** in parole semplici la prima volta che li usi: l'utente potrebbe non conoscerli.
 - **Copri tutti i rami**: chi usa il sistema, cosa deve fare, cosa succede quando qualcosa va storto (errori, dati mancanti, casi limite), dati e privacy, vincoli (tempi, costi, tecnologie imposte), cosa è **fuori perimetro**.
 - **Niente silenzi**: se stai per dare qualcosa per scontato, trasformalo in una domanda con il tuo consiglio.
