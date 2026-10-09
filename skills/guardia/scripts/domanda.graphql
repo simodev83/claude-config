@@ -1,3 +1,9 @@
+# La selezione letta su ogni PR, come frammento: guarda-pr.sh le costruisce intorno
+# la domanda. Contratto completo in testa a guarda-pr.sh.
+#
+# Adattato da skills/shepherd/scripts/query.graphql di palazzem/claude-config
+# (licenza Apache 2.0, copia in LICENSE-apache-2.0.txt); modificato.
+
 fragment pr on PullRequest {
   number
   state

@@ -50,7 +50,7 @@ prova() {
     diff <(printf '%s\n' "$atteso") <(printf '%s\n' "$ottenuto") | sed 's/^/     /'
     fallite=$((fallite + 1))
   fi
-  rm -f "$CARTELLA"/*.json
+  rm -f "$CARTELLA"/*.json "$CARTELLA/.chiamate"
 }
 
 S_VUOTA=$(segno "$E" "$E" "$E" CLEAN NESSUNA aaa)
@@ -138,6 +138,19 @@ prova "attesa: uno strato entrato nella pila durante l'attesa si legge dall'iniz
 {\"5\":$(segno "$E" "$E" "$E" DIRTY NESSUNA aaa),\"6\":$(segno 2026-01-01T10:00:00Z "$E" "$E" CLEAN NESSUNA aaa)}" \
   "$GUARDA" attesa "{\"5\":$(segno "$E" "$E" "$E" DIRTY NESSUNA aaa)}"
 
+pr 5
+pr 6
+prova "inizio: più PR fuori da una pila di GitHub si sorvegliano insieme" 0 \
+  "{\"5\":$S_VUOTA,\"6\":$S_VUOTA}" \
+  "$GUARDA" inizio 5 6
+
+pr 5 "$PILA"' | .state = "MERGED"'
+pr 6 "$PILA"
+prova "attesa: lo strato basso unito esce dal segnalibro, quello sopra resta" 0 \
+  '{"evento":"UNITA","pr":5}'"
+{\"6\":$S_VUOTA}" \
+  "$GUARDA" attesa "{\"5\":$S_VUOTA,\"6\":$S_VUOTA}"
+
 S_INDIETRO=$(segno "$E" "$E" "$E" BEHIND NESSUNA aaa)
 pr 5 '.mergeStateStatus = "BEHIND"'
 prova "attesa: INDIETRO quando GitHub blocca il merge del ramo non aggiornato" 0 \
@@ -161,7 +174,30 @@ prova "inizio: un controllo in errore o annullato è CI fallita" 0 \
 {\"5\":$(segno "$E" "$E" "$E" CLEAN FALLITA aaa)}" \
   "$GUARDA" inizio 5
 
+pr 5 '.mergeStateStatus = "UNKNOWN"'
+prova "attesa: lo stato del merge UNKNOWN non sveglia" 0 \
+  "{\"5\":$(segno "$E" "$E" "$E" UNKNOWN NESSUNA aaa)}" \
+  "$GUARDA" attesa "{\"5\":$S_VUOTA}"
+
+pr 5 '.mergeStateStatus = "BLOCKED" | ci([controllo("SUCCESS")])'
+prova "attesa: alla scadenza il segnalibro riporta i cambi che non svegliano" 0 \
+  "{\"5\":$(segno "$E" "$E" "$E" BLOCKED OK aaa)}" \
+  "$GUARDA" attesa "{\"5\":$S_VUOTA}"
+
+pr 5 'ci([controllo("FAILURE")])'
+prova "attesa: la CI che fallisce dopo essere stata in corso sveglia" 0 \
+  '{"evento":"CI_FALLITA","pr":5}'"
+{\"5\":$(segno "$E" "$E" "$E" CLEAN FALLITA aaa)}" \
+  "$GUARDA" attesa "{\"5\":$(segno "$E" "$E" "$E" CLEAN IN_CORSO aaa)}"
+
+pr 5
+prova "attesa: una lettura riuscita azzera il conto degli errori" 124 \
+  "" \
+  timeout 3 env GUARDIA_DURATA=100 GUARDIA_MAX_ERRORI=2 PROVA_FALLISCE="1 3 5" "$GUARDA" attesa "{\"5\":$S_VUOTA}"
+
 prova "uso: il numero della PR deve essere un numero" 2 "" "$GUARDA" inizio abc
+prova "uso: ogni numero di PR deve essere un numero" 2 "" "$GUARDA" inizio 5 abc
+prova "uso: attesa vuole un solo segnalibro" 2 "" "$GUARDA" attesa "{\"5\":$S_VUOTA}" altro
 prova "uso: servono due argomenti" 2 "" "$GUARDA" inizio
 prova "uso: comando sconosciuto" 2 "" "$GUARDA" guarda 5
 prova "uso: il segnalibro vuoto non si arma" 2 "" "$GUARDA" attesa '{}'
@@ -172,7 +208,9 @@ prova "uso: le impostazioni devono essere numeri interi" 2 "" env GUARDIA_INTERV
 prova "inizio: una lettura fallita esce con 1" 1 "" env PROVA_ERRORE=1 "$GUARDA" inizio 5
 prova "inizio: una PR che GitHub non trova esce con 1" 1 "" "$GUARDA" inizio 7
 prova "attesa: troppe letture fallite di fila esce con 1" 1 "" \
-  env PROVA_ERRORE=1 GUARDIA_MAX_ERRORI=2 "$GUARDA" attesa "{\"5\":$S_VUOTA}"
+  env PROVA_ERRORE=1 GUARDIA_MAX_ERRORI=2 GUARDIA_DURATA=100 "$GUARDA" attesa "{\"5\":$S_VUOTA}"
+prova "attesa: letture fallite fino alla scadenza escono con 1" 1 "" \
+  timeout 5 env PROVA_ERRORE=1 GUARDIA_MAX_ERRORI=1000000 "$GUARDA" attesa "{\"5\":$S_VUOTA}"
 
 if (( fallite > 0 )); then
   echo "$fallite prove fallite"

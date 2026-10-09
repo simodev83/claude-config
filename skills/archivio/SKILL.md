@@ -6,7 +6,7 @@ user-invocable: false
 
 # Archivio del workflow
 
-Le skill del workflow (`requisiti`, `spec`, `piano`, `implementa`, `tdd`, `workflow`) salvano quello che producono in un **archivio**, di tre tipi:
+Le skill del workflow (`requisiti`, `spec`, `piano`, `implementa`, `tdd`, `guardia`, `workflow`) salvano e leggono i loro documenti in un **archivio**, di tre tipi:
 
 - **Issues**: GitHub Issues del repo del progetto, visibili a chi vede il repo.
 - **File**: file Markdown nella cartella `docs/workflow/` del progetto, salvati nel repo con commit.
@@ -285,7 +285,7 @@ Usata da `implementa` e da `tdd`. Prerequisito: il lavoro è su rami **diversi**
 
 ## 11. Regole di sicurezza
 
-- Non usare mai `git push --force`, `git reset --hard`, `git clean`, `git stash`, `git worktree remove --force` o comandi che cancellano lavoro, salvo richiesta esplicita dell'utente. Le uniche pubblicazioni che riscrivono i rami sono `gh stack push` dopo un `gh stack rebase`, `gh stack sync` e, con uno strato solo, `git push --force-with-lease` dopo il rebase che fa la skill `guardia` quando il ramo principale si è spostato: toccano solo i rami del lavoro e si fermano se qualcun altro li ha cambiati.
+- Non usare mai `git push --force`, `git reset --hard`, `git clean`, `git stash`, `git worktree remove --force` o comandi che cancellano lavoro, salvo richiesta esplicita dell'utente. Le uniche pubblicazioni che riscrivono i rami sono `gh stack push` dopo un `gh stack rebase`, `gh stack sync --prune` dopo il merge di uno strato e, senza pila, `git push --force-with-lease=<ramo>:<commit>` con il commit letto su GitHub prima del rebase; le ultime due le usa solo la skill `guardia`, dopo aver controllato che nessuno abbia aggiunto commit al ramo su GitHub. Toccano solo i rami del lavoro.
 - Non toccare le modifiche non salvate dell'utente nella cartella principale: niente commit, stash o annullamenti.
 - Non mettere mai nel `.gitignore` le esclusioni che riguardano solo questo computer: vanno nelle esclusioni locali (sezione 5).
 - Non fare mai merge di una pull request: il merge lo fa l'utente.

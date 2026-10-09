@@ -6,15 +6,15 @@
 #
 # Adattato da skills/shepherd/scripts/watch-pr.sh di palazzem/claude-config
 # (https://github.com/palazzem/claude-config, licenza Apache 2.0, copia in
-# LICENSE-apache-2.0.txt). Lo stesso vale per jq/ e domanda.graphql. Modifiche:
-# nomi e messaggi in italiano; INDIETRO solo quando GitHub blocca il merge, non
-# a ogni spostamento della base; la CI ricorda il commit in cima, così un nuovo
-# commit che fallisce sveglia anche se la CI era già fallita; l'attesa si ferma
-# da sola dopo GUARDIA_DURATA secondi, perché un monitor dura al massimo 30
-# minuti.
+# LICENSE-apache-2.0.txt). Modifiche: nomi e messaggi in italiano; INDIETRO
+# solo quando GitHub blocca il merge, non a ogni spostamento della base; la CI
+# ricorda il commit in cima, così un nuovo commit che fallisce sveglia anche se
+# la CI era già fallita; inizio accetta più PR, per le pile che GitHub non
+# conosce; l'attesa si ferma da sola dopo GUARDIA_DURATA secondi, perché un
+# monitor dura al massimo 30 minuti; ogni lettura ha un tempo massimo.
 #
 # Uso:
-#   guarda-pr.sh inizio <numero>        una volta per sorveglianza: stampa tutto ciò che
+#   guarda-pr.sh inizio <numero>...     una volta per sorveglianza: stampa tutto ciò che
 #                                       è in sospeso su ogni strato aperto (ogni commento,
 #                                       revisione e risposta non marcati, conflitti, CI,
 #                                       o la fine), poi il segnalibro
@@ -23,8 +23,9 @@
 #                                       segnalibro, li stampa con il nuovo segnalibro ed
 #                                       esce; dopo GUARDIA_DURATA secondi (1500) senza
 #                                       eventi stampa solo il segnalibro aggiornato ed esce
-# <numero> è una qualsiasi PR della pila; il repo è quello della cartella
-# corrente (o GH_REPO). Il segnalibro è tutto lo stato della sorveglianza:
+# <numero> è una qualsiasi PR della pila, oppure, per una pila che GitHub non
+# conosce, tutte le sue PR aperte; il repo è quello della cartella corrente (o
+# GH_REPO). Il segnalibro è tutto lo stato della sorveglianza:
 # attesa non vuole altro.
 #
 # Ogni riga su stdout è un oggetto JSON; l'ultima è sempre il segnalibro, le
@@ -77,9 +78,12 @@
 # definizioni di jq/lib.jq; jq/strati.jq dà gli strati nominati dalla risposta,
 # quando sono più di quelli letti.
 #
+# Ogni lettura dura al massimo GUARDIA_TEMPO_LETTURA secondi (60).
+#
 # Codici di uscita: 0 stampato (inizio: lettura completa; attesa: eventi o
-# scadenza); 1 lettura fallita (inizio) o GUARDIA_MAX_ERRORI (20) letture
-# fallite di fila (attesa); 2 errore di chiamata.
+# scadenza); 1 lettura fallita (inizio), oppure GUARDIA_MAX_ERRORI (20) letture
+# fallite di fila o la scadenza raggiunta dopo una lettura fallita (attesa),
+# senza stampare nulla su stdout; 2 errore di chiamata.
 
 set -euo pipefail
 
@@ -89,20 +93,24 @@ EPOCA='1970-01-01T00:00:00Z'
 INTERVALLO="${GUARDIA_INTERVALLO:-30}"
 MAX_ERRORI="${GUARDIA_MAX_ERRORI:-20}"
 DURATA="${GUARDIA_DURATA:-1500}"
+TEMPO_LETTURA="${GUARDIA_TEMPO_LETTURA:-60}"
 
 uso() {
-  echo "uso: guarda-pr.sh inizio <numero> | attesa '<segnalibro>'" >&2
+  echo "uso: guarda-pr.sh inizio <numero>... | attesa '<segnalibro>'" >&2
   exit 2
 }
 
-[[ $# -eq 2 ]] || uso
-for valore in "$INTERVALLO" "$MAX_ERRORI" "$DURATA"; do
+[[ $# -ge 2 ]] || uso
+for valore in "$INTERVALLO" "$MAX_ERRORI" "$DURATA" "$TEMPO_LETTURA"; do
   [[ "$valore" =~ ^[0-9]+$ ]] || {
-    echo "guarda-pr: GUARDIA_INTERVALLO, GUARDIA_MAX_ERRORI e GUARDIA_DURATA devono essere numeri interi" >&2
+    echo "guarda-pr: GUARDIA_INTERVALLO, GUARDIA_MAX_ERRORI, GUARDIA_DURATA e GUARDIA_TEMPO_LETTURA devono essere numeri interi" >&2
     exit 2
   }
 done
 
+# La domanda GraphQL che legge le PR date: un alias pullRequest per numero,
+# intorno al frammento di domanda.graphql. Fallisce se un numero non è fatto
+# solo di cifre.
 domanda() {
   local n letture=""
   for n in "$@"; do
@@ -113,13 +121,19 @@ domanda() {
     "$letture" "$(cat "$QUI/domanda.graphql")"
 }
 
+# Legge le PR date e stampa .data.repository. Fallisce se la lettura non
+# riesce, supera TEMPO_LETTURA o lascia un alias null.
 leggi() {
   local testo
   testo=$(domanda "$@") || return 1
-  gh api graphql -F owner='{owner}' -F name='{repo}' -f query="$testo" \
+  timeout "$TEMPO_LETTURA" gh api graphql -F owner='{owner}' -F name='{repo}' -f query="$testo" \
     | jq -e '.data.repository | select(. != null and all(.[]; . != null))'
 }
 
+# Una passata sugli strati delle PR nominate da $ultimo: mette in $uscita le
+# righe degli eventi e poi il segnalibro. L'attività sveglia se più recente
+# della voce dello strato in $armato, conflitti e CI se diversi dalla voce in
+# $ultimo. Fallisce se una lettura fallisce.
 passata() {
   local numeri piu_larga risposta
   read -r -a numeri <<<"$(jq -r 'keys_unsorted | join(" ")' <<<"$ultimo")"
@@ -135,9 +149,13 @@ passata() {
 
 case "$1" in
   inizio)
-    [[ "$2" =~ ^[1-9][0-9]*$ ]] || { echo "guarda-pr: <numero> deve essere il numero della PR" >&2; exit 2; }
+    shift
+    ultimo='{}'
+    for numero in "$@"; do
+      [[ "$numero" =~ ^[1-9][0-9]*$ ]] || { echo "guarda-pr: <numero> deve essere il numero di una PR" >&2; exit 2; }
+      ultimo=$(jq -c --arg n "$numero" '. + {($n): {}}' <<<"$ultimo")
+    done
     armato='{}'
-    ultimo="{\"$2\":{}}"
     if ! passata; then
       echo "guarda-pr: lettura fallita; rilancialo" >&2
       exit 1
@@ -146,6 +164,7 @@ case "$1" in
     exit 0
     ;;
   attesa)
+    [[ $# -eq 2 ]] || uso
     jq -es 'length == 1 and (.[0] | type == "object" and length > 0 and all(to_entries[];
       (.key | test("\\A[1-9][0-9]*\\z")) and (.value | type == "object"
         and ([.commento, .revisione, .risposta, .merge, .ci, .testa] | all(type == "string")))))' \
@@ -169,7 +188,7 @@ while :; do
     errori=0
   else
     errori=$((errori + 1))
-    if (( errori >= MAX_ERRORI )); then
+    if (( errori >= MAX_ERRORI || SECONDS >= DURATA )); then
       echo "guarda-pr: $errori letture fallite di fila; mi fermo" >&2
       exit 1
     fi

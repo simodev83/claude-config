@@ -37,6 +37,9 @@ Poi annota la **base del primo strato**: `git rev-parse HEAD`, subito dopo l'ape
 ```markdown
 Funzione: <nome-breve>
 Consegna: <GitHub | git locale>
+Spec: <numero dell'issue o percorso assoluto>
+Piano: <issue o percorso assoluto>
+Comando di test: <comando>
 In corso: <cosa stai facendo e su quale ramo, per esempio "correzioni del collaudo sullo strato 1, feature/export-csv">
 
 ## Strato N – <titolo>

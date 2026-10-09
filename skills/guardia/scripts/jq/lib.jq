@@ -1,3 +1,9 @@
+# Definizioni comuni della passata: stato della CI, commit in cima, attività
+# più recente, revisioni inviate, testi non marcati. Usano $epoca e $marcatore.
+#
+# Adattato da skills/shepherd/scripts/jq/lib.jq di palazzem/claude-config
+# (licenza Apache 2.0, copia in LICENSE-apache-2.0.txt); modificato.
+
 # Un controllo annullato sul commit in cima è un annullamento a mano, non un
 # push più recente (quelli riguardano il commit vecchio), e blocca il merge.
 def stato_ci:

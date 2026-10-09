@@ -1,6 +1,6 @@
 # claude-config
 
-La mia configurazione di Claude Code: questa cartella è `~/.claude`. Contiene il regolamento globale (`CLAUDE.md`), le impostazioni, gli hook, la barra di stato e le skill personali: un workflow ingegneristico dall'idea alla pull request, più il TDD.
+La mia configurazione di Claude Code: questa cartella è `~/.claude`. Contiene il regolamento globale (`CLAUDE.md`), le impostazioni, gli hook, la barra di stato e le skill personali: un workflow ingegneristico dall'idea al merge, più il TDD.
 
 | Skill | Comando | Cosa fa |
 |---|---|---|
@@ -86,4 +86,4 @@ Il metodo di interrogatorio, la modalità mappa e le regole del TDD sono ispirat
 
 Gli agenti, il modo di lavorare per strati e la guardia sono adattati da [palazzem/claude-config](https://github.com/palazzem/claude-config) (licenza Apache 2.0). I testi sono riscritti in italiano. Lo script della guardia (`skills/guardia/scripts/`) è una versione modificata di quello della skill `shepherd`: le modifiche sono elencate in testa a `guarda-pr.sh`.
 
-Le prove dello script si lanciano con `skills/guardia/scripts/prove/prova.sh` (servono `bash` e `jq`).
+Le prove dello script si lanciano con `skills/guardia/scripts/prove/prova.sh` (servono `bash`, `jq` e `timeout`).
