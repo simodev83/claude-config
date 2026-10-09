@@ -12,6 +12,17 @@ La mia configurazione di Claude Code: questa cartella è `~/.claude`. Contiene i
 | tdd | `/tdd <obiettivo>` | Ciclo rosso → verde; usabile anche da sola per correggere un bug |
 | archivio | — | Regole interne: dove salvare (GitHub Issues o `docs/workflow/`). Non si lancia a mano |
 
+## Agenti
+
+Aiutanti che le skill lanciano da sole, ognuno con il suo compito e il suo modello. Stanno in `agents/`.
+
+| Agente | Modello e impegno | Cosa fa |
+|---|---|---|
+| costruttore | Opus, medio | Costruisce un passo del piano in TDD, con un commit; se si blocca restituisce una domanda per l'utente |
+| semplificatore | Opus, medio | Riordina il codice di uno strato senza cambiarne il comportamento, prima della revisione |
+| revisore | Opus, alto | Sola lettura: revisione di uno strato, oppure collaudo finale con tabella dei criteri e verdetto |
+| ricercatore | Sonnet, basso | Risponde a una domanda su una libreria leggendo solo la documentazione ufficiale, con citazione |
+
 ## Cosa c'è nel repo
 
 Il `.gitignore` esclude tutto tranne la configurazione elencata al suo interno. Restano sempre fuori: le credenziali, la cronologia delle conversazioni, le memorie dei progetti (`projects/`), le cache e le skill sincronizzate da claude.ai (`skills/synced/`). Per aggiungere un file o una cartella al repo va aggiunta una riga `!/<nome>` nel `.gitignore`.
@@ -70,3 +81,5 @@ Nel `CLAUDE.md` di un progetto puoi fissare alcune scelte:
 ## Crediti
 
 Il metodo di interrogatorio, la modalità mappa e le regole del TDD sono ispirati a [mattpocock/skills](https://github.com/mattpocock/skills) (licenza MIT) di Matt Pocock. I testi di queste skill sono scritti da zero, in italiano.
+
+Gli agenti e il modo di lavorare per strati sono adattati da [palazzem/claude-config](https://github.com/palazzem/claude-config) (licenza Apache 2.0). I testi sono riscritti in italiano.
