@@ -197,7 +197,7 @@ Un **worktree** è una seconda cartella dello stesso progetto, con un suo ramo: 
    - Consegna git locale: `git worktree add -b <ramo> "<percorso>" <principale>`.
 6. **Ingresso.** Strumento `EnterWorktree` con `path: "<percorso>"`. Da qui ogni file del progetto si scrive nel worktree, mai nella `<radice>`; l'unica eccezione sono i documenti dell'archivio Locale.
 7. **Documenti (solo File).** Sposta spec e piano dalla `<radice>` al worktree, allo stesso percorso relativo: `mkdir -p` delle cartelle, poi `mv "<radice>/docs/workflow/spec/<nome-breve>.md" "<percorso>/docs/workflow/spec/<nome-breve>.md"` e lo stesso per il piano. Poi, nel worktree, il primo commit con i percorsi esatti: `git add docs/workflow/spec/<nome-breve>.md docs/workflow/piani/<nome-breve>.md` e `git commit -m "Documenti: <nome-breve>"`.
-8. **File locali e dipendenze**, dalla sezione del piano che li elenca:
+8. **File locali e dipendenze**, dalla sezione `Preparazione del worktree` del piano:
    - per ogni file locale da copiare (per esempio `.env`): se manca nella `<radice>`, **fermati** e chiedi. Se nel worktree `git check-ignore -q <file>` fallisce, il file finirebbe nel repo: **fermati** e avvisa l'utente. Altrimenti `cp "<radice>/<file>" "<percorso>/<file>"`;
    - lancia nel worktree il comando di installazione delle dipendenze; se fallisce, **fermati** e riporta l'errore.
 9. **Verifica di partenza.** Lancia nel worktree il comando di test del piano. Se i test falliscono prima di qualsiasi modifica, **fermati**: spiega all'utente che il problema c'era già e chiedi come procedere. Se lo strumento di test non è ancora installato perché lo installa il primo passo del piano, dillo e prosegui.
@@ -223,7 +223,7 @@ Si chiude il worktree solo quando il lavoro è unito al ramo principale, oppure 
 
 Uno **strato** è un pezzo del lavoro con un solo scopo, abbastanza piccolo da rileggere in una volta (circa 300 righe): ha un suo ramo e, con consegna GitHub, una sua pull request. Gli strati sono **impilati**: ognuno parte da quello sotto, il primo dal ramo principale. Chi rivede le pull request vede solo le modifiche di uno strato alla volta.
 
-**Nomi dei rami.** Li fissa il piano: il primo strato è `feature/<nome-breve>` (per un bug `fix/<nome-breve>`), i successivi `feature/<nome-breve>-<n>` con `<n>` da 2 in su, dal basso verso l'alto.
+**Nomi dei rami.** Li fissa il piano: il primo strato è `feature/<nome-breve>` (per un bug `fix/<nome-breve>`), i successivi con lo stesso prefisso e `-<n>` in fondo (`feature/<nome-breve>-<n>`), con `<n>` da 2 in su, dal basso verso l'alto.
 
 **Consegna git locale.** Niente pila: tutti gli strati diventano commit successivi sull'unico ramo del worktree.
 
