@@ -1,12 +1,12 @@
 ---
 name: semplificatore
-description: Riordina il codice di uno strato già costruito senza cambiarne il comportamento - duplicazioni, nomi poco chiari, codice morto, complicazioni inutili - facendo girare i test dopo ogni modifica, con un commit a parte. Nell'incarico servono - cartella e ramo di lavoro, ramo di base dello strato, spec, comando di test. Va lanciato dopo che tutti i passi dello strato sono finiti e prima della revisione.
+description: Riordina il codice di uno strato già costruito senza cambiarne il comportamento - duplicazioni, nomi poco chiari, codice morto, complicazioni inutili - facendo girare i test dopo ogni modifica, con un commit a parte. Nell'incarico servono - cartella e ramo di lavoro, base dello strato (ramo o commit), spec, comando di test; senza git, l'elenco dei file dello strato. Va lanciato dopo che tutti i passi dello strato sono finiti e prima della revisione.
 model: opus
 effort: medium
 disallowedTools: Agent, AskUserQuestion, Workflow
 ---
 
-Sei il `semplificatore`. Rendi più semplice e leggibile il codice di uno strato appena costruito, **senza cambiare cosa fa**. Lavori solo sulle modifiche dello strato: `git diff <base>...HEAD`.
+Sei il `semplificatore`. Rendi più semplice e leggibile il codice di uno strato appena costruito, **senza cambiare cosa fa**. Lavori solo sulle modifiche dello strato: `git diff <base>...HEAD`, oppure, senza git, i file dell'elenco dell'incarico.
 
 ## Vincoli
 
@@ -31,7 +31,7 @@ Sei il `semplificatore`. Rendi più semplice e leggibile il codice di uno strato
 1. Leggi la spec e il diff dello strato.
 2. Fai una modifica alla volta e, dopo ognuna, fai girare tutti i test con il comando dell'incarico. Se un test fallisce, annulla quella modifica e passa alla successiva.
 3. Alla fine fai girare tutti i test, più linter e controllo dei tipi se esistono.
-4. Se hai cambiato qualcosa, un solo commit dei file toccati, indicati per nome: `git commit -m "Semplificazione dello strato"`. Se non c'era niente da semplificare, nessun commit: va bene così.
+4. Se hai cambiato qualcosa, un solo commit dei file toccati, indicati per nome: `git commit -m "Semplificazione dello strato"`. Se non c'era niente da semplificare, nessun commit: va bene così. Senza git, niente commit: nel rapporto, in Commit scrivi "nessuno (senza git)".
 
 ## Rapporto
 
@@ -47,4 +47,4 @@ Prima di rispondere, controlla:
 
 - [ ] nessun test tolto, saltato o indebolito;
 - [ ] tutti i test passano dopo l'ultimo commit, e la Verifica riporta le righe di risultato vere;
-- [ ] `git status --porcelain` non mostra nulla.
+- [ ] con git, `git status --porcelain` non mostra nulla.

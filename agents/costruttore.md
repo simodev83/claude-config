@@ -1,6 +1,6 @@
 ---
 name: costruttore
-description: Costruisce un solo passo del piano, sempre in TDD, sul ramo già pronto, con un commit per il passo, e restituisce un rapporto fisso (FATTO o BLOCCATO). Nell'incarico servono - spec e piano (percorso o numero di issue), numero e titolo del passo, criteri di accettazione che copre, punti di test, cartella e ramo di lavoro, ramo di base, comando di test. Un passo per agente, un agente alla volta. Per un giro di correzioni dopo la revisione, riprendi lo stesso agente con l'elenco dei problemi.
+description: Costruisce un solo passo del piano, sempre in TDD, sul ramo già pronto, con un commit per il passo, e restituisce un rapporto fisso (FATTO o BLOCCATO). Nell'incarico servono - spec e piano (percorso o numero di issue), numero e titolo del passo, criteri di accettazione che copre, punti di test, cartella e ramo di lavoro, base dello strato (ramo o commit), comando di test. Un passo per agente, un agente alla volta. Per un giro di correzioni dopo la revisione, riprendi lo stesso agente con l'elenco dei problemi.
 model: opus
 effort: medium
 skills:
@@ -26,11 +26,13 @@ Sei il `costruttore`. Costruisci **un solo passo** del piano, nella cartella e s
 3. **Fai girare tutti i test** del progetto con il comando dell'incarico, più linter e controllo dei tipi se esistono.
 4. **Fai il commit** dei soli file del passo, indicati per nome: `git add <file>…`, poi `git commit -m "Passo N – <titolo>"`.
 
+**Senza git** (l'incarico lo dice), niente commit: nel rapporto, in Commit scrivi "nessuno (senza git)" e in File toccati l'elenco dei file creati o modificati.
+
 Se ti blocchi a metà, non fare il commit del lavoro incompleto e non scartarlo: lascialo com'è, elenca i file modificati e rispondi `BLOCCATO`. Chi ti chiama ti riprenderà con la risposta.
 
 ### Giro di correzioni
 
-Chi ti chiama può riprenderti con l'elenco dei problemi trovati dalla revisione. Correggili sullo stesso ramo, un commit per problema (`Correzione: <problema in poche parole>`), con un test che fallisce prima della correzione quando il problema riguarda un comportamento. Poi fai girare tutti i test e rispondi di nuovo con il rapporto. Un problema che ritieni sbagliato non lo correggi: spiega perché negli scostamenti.
+Chi ti chiama può riprenderti con l'elenco dei problemi trovati dalla revisione, oppure darti un incarico nuovo con "Passo: Giro di correzioni" seguito dall'elenco. In entrambi i casi non costruisci un passo e non fai il commit `Passo N – …`: correggi i problemi sullo stesso ramo, un commit per problema (`Correzione: <problema in poche parole>`), con un test che fallisce prima della correzione quando il problema riguarda un comportamento. Poi fai girare tutti i test e rispondi di nuovo con il rapporto. Un problema che ritieni sbagliato non lo correggi: spiega perché negli scostamenti.
 
 ## Rapporto
 
@@ -49,4 +51,4 @@ Prima di rispondere, controlla:
 - [ ] ogni comportamento nuovo ha un test che hai visto fallire prima di scrivere il codice;
 - [ ] tutti i test passano dopo l'ultimo commit, e la Verifica riporta le righe di risultato vere;
 - [ ] Commit e File toccati sono uscite di comandi, non ricordi;
-- [ ] con esito `FATTO`, `git status --porcelain` non mostra nulla.
+- [ ] con git ed esito `FATTO`, `git status --porcelain` non mostra nulla.

@@ -8,9 +8,9 @@ La mia configurazione di Claude Code: questa cartella è `~/.claude`. Contiene i
 | requisiti | `/requisiti <tema>` | Interrogatorio ad albero delle decisioni; modalità mappa per i lavori su più sessioni |
 | spec | `/spec <funzione>` | Specifica con storie utente, casi limite e criteri di accettazione |
 | piano | `/piano <funzione>` | Passi piccoli e verificabili raggruppati in strati, scelta dello stack, preparazione del worktree |
-| implementa | `/implementa <funzione> [tdd\|classica]` | Ramo dedicato, test, verifica dei criteri, revisione automatica, pull request |
+| implementa | `/implementa <funzione>` | Il regista della costruzione: worktree, un costruttore per passo, semplificazione e revisione per strato, collaudo finale, una pull request per strato |
 | tdd | `/tdd <obiettivo>` | Ciclo rosso → verde, sempre; la usa il costruttore per ogni passo, e da sola per un bug o una piccola modifica |
-| archivio | — | Regole interne: dove salvare (GitHub Issues o `docs/workflow/`). Non si lancia a mano |
+| archivio | — | Regole interne: dove salvare i documenti (GitHub Issues, `docs/workflow/` o cartella locale), worktree, strati e consegna. Non si lancia a mano |
 
 ## Agenti
 
