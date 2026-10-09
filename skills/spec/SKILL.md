@@ -13,7 +13,7 @@ La spec è il **contratto**: dice esattamente cosa deve fare la funzione e come 
 ## Passo 0: archivio e contesto
 
 1. Carica la skill `archivio` ed esegui il suo controllo iniziale.
-2. Cerca i requisiti collegati (etichetta `wf:requisiti`, o `docs/workflow/requisiti-*.md`) e leggili.
+2. Cerca i requisiti collegati (etichetta `wf:requisiti`, o `<cartella>/requisiti-*.md`; `<cartella>` è `docs/workflow/` per File, `.claude/specs/` per Locale, come nella sezione 4 della skill `archivio`) e leggili.
 3. Esplora il codice esistente per capire dove si inserisce la funzione e quali convenzioni usa il progetto (nomi, struttura, test già presenti).
 
 ## Passo 1: niente nuovo interrogatorio
@@ -79,7 +79,7 @@ Regole:
 1. Mostra all'utente la spec e chiedi l'approvazione. Applica le correzioni richieste.
 2. Dopo l'approvazione salva:
    - **Issues**: issue `Spec – <Funzione>` con etichetta `wf:spec`. Se esiste un'issue di requisiti o una mappa collegata, crea la spec come sua sotto-issue (`--parent`).
-   - **File**: `docs/workflow/spec/<nome-breve>.md`, con prima riga `Stato: aperto`.
+   - **File o Locale**: `<cartella>/spec/<nome-breve>.md`, con prima riga `Stato: aperto`.
 3. Chiudi:
    - **Se sei stata richiamata da `workflow`**: restituisci il riferimento alla spec e il nome breve, poi termina senza proporre comandi.
    - **Altrimenti**: proponi il passo successivo. Consiglia `/piano <nome-breve>` se la funzione tocca più parti del sistema o richiede scelte tecniche, altrimenti `/implementa <nome-breve>` direttamente, e lascia scegliere l'utente.

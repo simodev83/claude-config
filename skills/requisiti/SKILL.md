@@ -81,7 +81,7 @@ Scrivi il documento con questa struttura:
 ```
 
 - **Issues**: crea un'issue `Requisiti – <tema>` con etichetta `wf:requisiti`.
-- **File**: `docs/workflow/requisiti-<tema>.md`.
+- **File o Locale**: `<cartella>/requisiti-<tema>.md` (`<cartella>` è `docs/workflow/` per File, `.claude/specs/` per Locale: sezione 4 della skill `archivio`).
 
 ## Passo 4: chiudi
 

@@ -8,7 +8,7 @@ Ogni elemento della mappa è una **domanda la cui risposta è una decisione**, m
 
 ## La mappa
 
-Una sola issue (etichetta `wf:mappa`, titolo `Mappa – <tema>`) oppure il file `docs/workflow/mappa-<tema>.md`. Il corpo ha quattro sezioni:
+Una sola issue (etichetta `wf:mappa`, titolo `Mappa – <tema>`) oppure il file `<cartella>/mappa-<tema>.md` (`<cartella>` è `docs/workflow/` per File, `.claude/specs/` per Locale: sezione 4 della skill `archivio`). Il corpo ha quattro sezioni:
 
 ```markdown
 ## Destinazione
@@ -31,7 +31,7 @@ La mappa è un **indice**: ogni decisione vive per esteso nella sua issue (o nel
 
 ## Le decisioni
 
-Ogni decisione è una sotto-issue della mappa (`--parent <mappa>`, etichetta `wf:decisione`), oppure un file in `docs/workflow/decisioni/<tema>/`. Il titolo inizia con il tipo:
+Ogni decisione è una sotto-issue della mappa (`--parent <mappa>`, etichetta `wf:decisione`), oppure un file in `<cartella>/decisioni/<tema>/`. Il titolo inizia con il tipo:
 
 | Tipo | Come si risolve | Serve l'utente? |
 |---|---|---|
@@ -47,7 +47,7 @@ Se una decisione dipende da un'altra, collegala con `--blocked-by`.
 1. Con l'utente, definisci la **destinazione** in una o due righe.
 2. Crea subito la mappa con la sola destinazione: serve il suo numero per agganciare le decisioni.
 3. Individua le prime decisioni già formulabili e crea le loro issue come sotto-issue della mappa; il resto va in **Nebbia**.
-4. Completa il corpo della mappa (Note, Nebbia, Fuori perimetro) con `gh issue edit`, oppure aggiornando il file in modalità File. Mostrala all'utente e fermati.
+4. Completa il corpo della mappa (Note, Nebbia, Fuori perimetro) con `gh issue edit`, oppure aggiornando il file in modalità File o Locale. Mostrala all'utente e fermati.
 
 ## Sessioni successive: una decisione alla volta
 
