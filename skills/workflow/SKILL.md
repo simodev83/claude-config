@@ -46,7 +46,7 @@ Richiama ogni fase con lo strumento Skill, passando il tema o la funzione come a
    - Se i requisiti contengono più funzioni, elencale e chiedi da quale partire. Le fasi successive si fanno **una funzione alla volta**.
 2. **`spec`**: finisce quando l'utente approva la spec. È il **secondo punto di approvazione**.
 3. **`piano`**: finisce quando l'utente approva stack, strati e passi. È il **terzo punto di approvazione**.
-4. **`implementa`**: da qui si lavora **in autonomia**, senza chiedere conferme, fino alla pull request. Ci si ferma prima solo nei casi previsti dalla skill: modifiche non salvate trovate all'inizio, `git pull` fallito, ramo già esistente, passo impossibile, criteri non chiusi dopo 3 giri, push rifiutato.
+4. **`implementa`**: da qui si lavora **in autonomia**, senza chiedere conferme, fino alle pull request. Ci si ferma prima solo nei casi elencati nella sezione "Quando fermarsi" della skill.
 
 Quando richiami una fase, passale come argomento **solo** il tema o il nome breve, niente altro: il resto del testo verrebbe letto come parte del nome. La fase capisce dal contesto della conversazione (questa skill è attiva) di essere richiamata dal workflow, e in quel caso restituisce il riferimento a ciò che ha salvato invece di proporre comandi.
 
