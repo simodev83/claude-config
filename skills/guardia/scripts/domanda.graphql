@@ -1,0 +1,24 @@
+# La selezione letta su ogni PR, come frammento: guarda-pr.sh le costruisce intorno
+# la domanda. Contratto completo in testa a guarda-pr.sh.
+#
+# Adattato da skills/shepherd/scripts/query.graphql di palazzem/claude-config
+# (licenza Apache 2.0, copia in LICENSE-apache-2.0.txt); modificato.
+
+fragment pr on PullRequest {
+  number
+  state
+  mergeStateStatus
+  stack { entries(first: 100) { nodes { position pullRequest { number state } } } }
+  comments(last: 50) { nodes { url updatedAt body authorAssociation author { login } } }
+  reviews(last: 50, states: [APPROVED, CHANGES_REQUESTED, COMMENTED, DISMISSED]) {
+    nodes { url updatedAt body state authorAssociation author { login } }
+  }
+  reviewThreads(last: 50) {
+    nodes { comments(last: 20) { nodes { url updatedAt body authorAssociation author { login } pullRequestReview { state } } } }
+  }
+  commits(last: 1) { nodes { commit { oid statusCheckRollup { contexts(first: 100) { nodes {
+    __typename
+    ... on CheckRun { status conclusion }
+    ... on StatusContext { state }
+  } } } } } }
+}

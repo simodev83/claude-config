@@ -1,12 +1,12 @@
 ---
 name: archivio
-description: Regole condivise su dove salvare requisiti, mappe, spec e piani del workflow (GitHub Issues, file in docs/workflow o cartella locale non condivisa), su come aprire e chiudere il worktree di lavoro, impilare gli strati con gh stack, usare gh e git in modo sicuro e consegnare il lavoro con pull request. Caricala quando una delle skill requisiti, spec, piano, implementa, tdd o workflow te lo chiede; non serve in nessun altro caso.
+description: Regole condivise su dove salvare requisiti, mappe, spec e piani del workflow (GitHub Issues, file in docs/workflow o cartella locale non condivisa), su come aprire e chiudere il worktree di lavoro, impilare gli strati con gh stack, usare gh e git in modo sicuro e consegnare il lavoro con pull request. Caricala quando una delle skill requisiti, spec, piano, implementa, tdd, guardia o workflow te lo chiede; non serve in nessun altro caso.
 user-invocable: false
 ---
 
 # Archivio del workflow
 
-Le skill del workflow (`requisiti`, `spec`, `piano`, `implementa`, `tdd`, `workflow`) salvano quello che producono in un **archivio**, di tre tipi:
+Le skill del workflow (`requisiti`, `spec`, `piano`, `implementa`, `tdd`, `guardia`, `workflow`) salvano e leggono i loro documenti in un **archivio**, di tre tipi:
 
 - **Issues**: GitHub Issues del repo del progetto, visibili a chi vede il repo.
 - **File**: file Markdown nella cartella `docs/workflow/` del progetto, salvati nel repo con commit.
@@ -26,7 +26,7 @@ Lo stesso controllo decide anche la **consegna** del codice:
 
 Archivio e consegna si scelgono **una volta all'inizio di ogni skill**, con il controllo qui sotto, e non cambiano durante la skill.
 
-`tdd` usata da sola non salva documenti: del controllo le serve solo la consegna. Ignora le righe `Archivio workflow` e i fermi che dipendono dall'archivio (per esempio "il `CLAUDE.md` chiedeva `issues`"), salta i passi 6 e 7 e nella riga di stato ometti la parte `Archivio:`.
+`tdd` usata da sola e `guardia` non salvano documenti: del controllo serve loro solo la consegna. Ignora le righe `Archivio workflow` e i fermi che dipendono dall'archivio (per esempio "il `CLAUDE.md` chiedeva `issues`"), salta i passi 6 e 7 e nella riga di stato ometti la parte `Archivio:`.
 
 ## 1. Controllo iniziale
 
@@ -207,7 +207,7 @@ Un **worktree** è una seconda cartella dello stesso progetto, con un suo ramo: 
 
 ### Chiusura
 
-Si chiude il worktree solo quando il lavoro è unito al ramo principale, oppure quando l'utente chiede di abbandonarlo.
+Si chiude il worktree solo quando il lavoro è unito al ramo principale, oppure quando l'utente chiede di abbandonarlo. Con consegna GitHub lo chiude la skill `guardia` quando l'utente ha unito tutte le pull request; altrimenti lo chiedi tu all'utente.
 
 1. **Controllo.**
    - Consegna GitHub: per ogni ramo, `gh pr view <ramo> --json state --jq .state` deve dare `MERGED`.
@@ -218,8 +218,8 @@ Si chiude il worktree solo quando il lavoro è unito al ramo principale, oppure 
 3. Se il lavoro aveva più strati, lancia nel worktree `gh stack unstack --local`: toglie solo il ricordo locale della pila e non tocca GitHub.
 4. Se la sessione è nel worktree, esci con `ExitWorktree` e `action: "keep"`.
 5. `git worktree remove "<percorso>"`. Mai con `--force`: se si rifiuta, **fermati** e riporta l'errore.
-6. Per ogni ramo: `git branch -D <ramo>` (con `-D` perché un merge "squash" non risulta unito per git; il passo 1 garantisce che il lavoro è salvo o che l'utente ha confermato). Con consegna GitHub, se `git ls-remote --exit-code --heads origin <ramo>` lo trova ancora, `git push origin --delete <ramo>`.
-7. Se esiste la cartella di lavoro della funzione (corpi delle pull request della sezione 10 e file di stato della skill `implementa`), cancellala: `rm -r "<cartella comune>/wf/<nome-breve>"`.
+6. Per ogni ramo ancora presente (`git rev-parse --verify --quiet "refs/heads/<ramo>"`; la guardia cancella quelli degli strati uniti mentre altri erano aperti): `git branch -D <ramo>` (con `-D` perché un merge "squash" non risulta unito per git; il passo 1 garantisce che il lavoro è salvo o che l'utente ha confermato). Con consegna GitHub, se `git ls-remote --exit-code --heads origin <ramo>` lo trova ancora, `git push origin --delete <ramo>`.
+7. Se esiste la cartella di lavoro della funzione (corpi delle pull request della sezione 10, file di stato della skill `implementa`, registro della skill `guardia`), cancellala: `rm -r "<cartella comune>/wf/<nome-breve>"`.
 8. Con consegna GitHub, se la `<radice>` è sul ramo principale e senza modifiche, aggiornala con `git -C "<radice>" pull --ff-only`.
 
 ## 9. Strati
@@ -270,12 +270,14 @@ Usata da `implementa` e da `tdd`. Prerequisito: il lavoro è su rami **diversi**
    - Se termina con codice 9, il repo non ha le pile di pull request attive: le pull request esistono comunque, ognuna basata su quella sotto. Dillo all'utente: vanno rilette e unite dal basso verso l'alto. Non cambiare tu le impostazioni del repo.
 4. Verifica con `gh stack view --json` che ogni ramo abbia la sua pull request aperta.
 
+**Guardia.** Con consegna GitHub, appena create le pull request e prima del rapporto all'utente, carica la skill `guardia` passando il numero della pull request dello strato più basso: le sorveglierà fino al merge. Una pull request pubblicata non è finita finché l'utente non la unisce.
+
 **In entrambi i casi:**
 
 - Se un ramo ha già una pull request aperta (`gh pr view <ramo> --json state`), non crearne una seconda.
 - **Mai in bozza**: niente `--draft`. Una pull request consegnata è pronta da rileggere.
 - **Non unire mai le pull request** (né `gh pr merge` né `gh stack merge`): il merge lo fa l'utente.
-- Dopo il merge il worktree si chiude come nella sezione 8.
+- Dopo il merge il worktree si chiude come nella sezione 8: lo fa la guardia, oppure, se la sessione era chiusa, l'utente può riprenderla con `/guardia` o chiedere la chiusura.
 
 **Consegna git locale:** niente push né pull request. Spiega all'utente come unire il ramo quando è soddisfatto: nella cartella principale del progetto, `git switch <principale>` e poi `git merge <ramo>`. Poi può chiedere a Claude di chiudere il worktree (sezione 8).
 
@@ -283,7 +285,7 @@ Usata da `implementa` e da `tdd`. Prerequisito: il lavoro è su rami **diversi**
 
 ## 11. Regole di sicurezza
 
-- Non usare mai `git push --force`, `git reset --hard`, `git clean`, `git stash`, `git worktree remove --force` o comandi che cancellano lavoro, salvo richiesta esplicita dell'utente. L'unica pubblicazione che riscrive i rami è `gh stack push` dopo un `gh stack rebase`: tocca solo i rami della pila e si ferma se qualcun altro li ha cambiati.
+- Non usare mai `git push --force`, `git reset --hard`, `git clean`, `git stash`, `git worktree remove --force` o comandi che cancellano lavoro, salvo richiesta esplicita dell'utente. Le uniche pubblicazioni che riscrivono i rami sono `gh stack push` dopo un `gh stack rebase`, `gh stack sync --prune` dopo il merge di uno strato e, senza pila, `git push --force-with-lease=<ramo>:<commit>` con il commit letto su GitHub prima del rebase; le ultime due le usa solo la skill `guardia`, dopo aver controllato che nessuno abbia aggiunto commit al ramo su GitHub. Toccano solo i rami del lavoro.
 - Non toccare le modifiche non salvate dell'utente nella cartella principale: niente commit, stash o annullamenti.
 - Non mettere mai nel `.gitignore` le esclusioni che riguardano solo questo computer: vanno nelle esclusioni locali (sezione 5).
 - Non fare mai merge di una pull request: il merge lo fa l'utente.

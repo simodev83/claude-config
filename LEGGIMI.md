@@ -1,6 +1,6 @@
 # claude-config
 
-La mia configurazione di Claude Code: questa cartella è `~/.claude`. Contiene il regolamento globale (`CLAUDE.md`), le impostazioni, gli hook, la barra di stato e le skill personali: un workflow ingegneristico dall'idea alla pull request, più il TDD.
+La mia configurazione di Claude Code: questa cartella è `~/.claude`. Contiene il regolamento globale (`CLAUDE.md`), le impostazioni, gli hook, la barra di stato e le skill personali: un workflow ingegneristico dall'idea al merge, più il TDD.
 
 | Skill | Comando | Cosa fa |
 |---|---|---|
@@ -10,6 +10,7 @@ La mia configurazione di Claude Code: questa cartella è `~/.claude`. Contiene i
 | piano | `/piano <funzione>` | Passi piccoli e verificabili raggruppati in strati, scelta dello stack, preparazione del worktree |
 | implementa | `/implementa <funzione>` | Il regista della costruzione: worktree, un costruttore per passo, semplificazione e revisione per strato, collaudo finale, una pull request per strato |
 | tdd | `/tdd <obiettivo>` | Ciclo rosso → verde, sempre; la usa il costruttore per ogni passo, e da sola per un bug o una piccola modifica |
+| guardia | `/guardia [numero PR]` | Sorveglia le pull request fino al merge: risponde ai commenti, fa correggere, aggiorna i rami, poi chiude il worktree. Parte da sola alla consegna; `/guardia` la riprende in una nuova sessione |
 | archivio | — | Regole interne: dove salvare i documenti (GitHub Issues, `docs/workflow/` o cartella locale), worktree, strati e consegna. Non si lancia a mano |
 
 ## Agenti
@@ -62,7 +63,8 @@ Durante `/workflow` Claude richiama le altre skill e lancia comandi `git` e `gh`
   "permissions": {
     "allow": [
       "Skill(archivio)", "Skill(requisiti)", "Skill(spec)",
-      "Skill(piano)", "Skill(implementa)", "Skill(tdd)"
+      "Skill(piano)", "Skill(implementa)", "Skill(tdd)",
+      "Skill(guardia)"
     ]
   }
 }
@@ -82,4 +84,6 @@ Nel `CLAUDE.md` di un progetto puoi fissare alcune scelte:
 
 Il metodo di interrogatorio, la modalità mappa e le regole del TDD sono ispirati a [mattpocock/skills](https://github.com/mattpocock/skills) (licenza MIT) di Matt Pocock. I testi di queste skill sono scritti da zero, in italiano.
 
-Gli agenti e il modo di lavorare per strati sono adattati da [palazzem/claude-config](https://github.com/palazzem/claude-config) (licenza Apache 2.0). I testi sono riscritti in italiano.
+Gli agenti, il modo di lavorare per strati e la guardia sono adattati da [palazzem/claude-config](https://github.com/palazzem/claude-config) (licenza Apache 2.0). I testi sono riscritti in italiano. Lo script della guardia (`skills/guardia/scripts/`) è una versione modificata di quello della skill `shepherd`: le modifiche sono elencate in testa a `guarda-pr.sh`.
+
+Le prove dello script si lanciano con `skills/guardia/scripts/prove/prova.sh` (servono `bash`, `jq` e `timeout`).

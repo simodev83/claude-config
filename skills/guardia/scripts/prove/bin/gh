@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+# gh finto per le prove di guarda-pr.sh. Risponde solo a `gh api graphql`:
+# per ogni PR chiesta nella domanda (alias pr<numero>) restituisce il file
+# $PROVA_PR/<numero>.json, oppure null se manca, come farebbe GitHub.
+# Simula una lettura fallita (uscita 1) se PROVA_ERRORE non è vuoto, oppure
+# alle chiamate elencate in PROVA_FALLISCE (per esempio "1 3"), contate nel
+# file $PROVA_PR/.chiamate.
+set -euo pipefail
+
+[[ "${1:-} ${2:-}" == "api graphql" ]] || { echo "gh finto: comando inatteso: $*" >&2; exit 2; }
+[[ -z "${PROVA_ERRORE:-}" ]] || { echo "gh finto: errore simulato" >&2; exit 1; }
+chiamata=$(( $(cat "$PROVA_PR/.chiamate" 2>/dev/null || echo 0) + 1 ))
+echo "$chiamata" >"$PROVA_PR/.chiamate"
+[[ " ${PROVA_FALLISCE:-} " != *" $chiamata "* ]] || { echo "gh finto: errore simulato alla chiamata $chiamata" >&2; exit 1; }
+
+domanda=""
+for argomento in "$@"; do
+  [[ "$argomento" == query=* ]] && domanda=${argomento#query=}
+done
+
+risposta='{}'
+for n in $(grep -oE 'pr[0-9]+: pullRequest' <<<"$domanda" | grep -oE '[0-9]+' || true); do
+  pr=null
+  [[ -f "$PROVA_PR/$n.json" ]] && pr=$(cat "$PROVA_PR/$n.json")
+  risposta=$(jq -c --arg alias "pr$n" --argjson pr "$pr" '. + {($alias): $pr}' <<<"$risposta")
+done
+jq -c '{data: {repository: .}}' <<<"$risposta"
