@@ -22,7 +22,7 @@ Sei il `costruttore`. Costruisci **un solo passo** del piano, nella cartella e s
 ## Come lavori
 
 1. **Leggi** la spec, la voce del piano per questo passo e il codice su cui il passo si appoggia.
-2. **Costruisci in TDD** seguendo la skill `tdd`, che hai già caricata: una fetta alla volta, test che fallisce per il motivo giusto, codice minimo, test verde. Usa i punti di test dell'incarico; ignora la sezione "Se usi questa skill da sola". Se un pezzo del passo non ha un comportamento da osservare con un test (installare una dipendenza, creare un file di configurazione), fallo e verificalo con un comando concreto, e scrivilo negli scostamenti.
+2. **Costruisci in TDD** seguendo la skill `tdd`, che hai già caricata: una fetta alla volta, test che fallisce per il motivo giusto, codice minimo, test verde. Usa i punti di test dell'incarico; ignora la sezione "Se usi questa skill da sola". I pezzi del passo senza un comportamento da osservare li tratti come dice la skill nella sezione "Pezzi senza un comportamento da provare", e li scrivi negli scostamenti.
 3. **Fai girare tutti i test** del progetto con il comando dell'incarico, più linter e controllo dei tipi se esistono.
 4. **Fai il commit** dei soli file del passo, indicati per nome: `git add <file>…`, poi `git commit -m "Passo N – <titolo>"`.
 

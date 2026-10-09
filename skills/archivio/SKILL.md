@@ -185,6 +185,7 @@ Un **worktree** è una seconda cartella dello stesso progetto, con un suo ramo: 
 - `<radice>`: la cartella principale del progetto, cioè la cartella che contiene la cartella stampata da `git rev-parse --path-format=absolute --git-common-dir` (funziona anche se sei già in un worktree).
 - `<percorso>`: `<radice>/.claude/worktrees/<nome-breve>`.
 - Un solo worktree per funzione: tutti gli strati vivono nello stesso worktree, uno dopo l'altro.
+- Con `tdd` usata da sola non c'è un piano: ramo, preparazione e comando di test sono quelli che la skill ha fatto confermare all'utente.
 
 ### Apertura
 
