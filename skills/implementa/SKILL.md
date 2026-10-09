@@ -14,7 +14,7 @@ Il lavoro è finito solo quando **ogni criterio di accettazione della spec è ve
 
 1. Carica la skill `archivio` ed esegui il suo controllo iniziale. Annota: tipo di archivio, se c'è git, il ramo principale.
 2. Leggi la spec e prendi il suo **nome breve**. Se non c'è, fermati e proponi `/spec <funzione>`.
-3. Leggi il piano (sotto-issue `wf:passo` della spec, o `docs/workflow/piani/<nome-breve>.md`), compresi strumento e comando di test.
+3. Leggi il piano (sotto-issue `wf:passo` della spec, o `<cartella>/piani/<nome-breve>.md`; `<cartella>` è `docs/workflow/` per File, `.claude/specs/` per Locale, come nella sezione 4 della skill `archivio`), compresi strumento e comando di test.
    - Se non c'è e la funzione è piccola, scrivi un mini-piano (passi con modalità, strumento e comando di test, come nella skill `piano`), mostralo e aspetta l'ok. Da quel momento si procede in autonomia.
    - Se non c'è e la funzione è grande, proponi prima `/piano <funzione>`.
 
@@ -79,7 +79,7 @@ Quando torna il rapporto:
 
 ## Passo 6: consegna
 
-Segui la sezione 7 ("Consegna del lavoro") della skill `archivio`.
+Segui la sezione 10 ("Consegna del lavoro") della skill `archivio`.
 
 In modalità Issues, il corpo della pull request è:
 

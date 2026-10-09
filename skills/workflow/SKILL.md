@@ -19,7 +19,7 @@ requisiti ──ok──▶ spec ──ok──▶ piano ──ok──▶ imple
 
 1. Carica la skill `archivio` ed esegui il suo controllo iniziale. Le fasi lo ripeteranno: va bene, è veloce.
 2. Cerca cosa esiste già sul tema:
-   - nell'archivio: requisiti, mappa, spec, piano (con le ricerche per etichetta della skill `archivio`, oppure i file in `docs/workflow/`);
+   - nell'archivio: requisiti, mappa, spec, piano (con le ricerche per etichetta della skill `archivio`, oppure i file in `docs/workflow/` o `.claude/specs/`);
    - con git: `git branch --list "feature/*" "fix/*"`;
    - in modalità Issues: `gh pr list --state open --search "<tema>"`.
 3. Se il lavoro è già iniziato, di' all'utente a che punto è ("Requisiti fatti, spec approvata, manca il piano") e proponi di ripartire dalla fase successiva. Se c'è una mappa aperta, si riparte da `requisiti`, che proseguirà la mappa.

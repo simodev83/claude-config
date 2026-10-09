@@ -13,7 +13,7 @@ Il piano dice **come** si arriva a soddisfare la spec: in quali passi, in che or
 ## Passo 0: archivio e contesto
 
 1. Carica la skill `archivio` ed esegui il suo controllo iniziale.
-2. Trova e leggi la spec (etichetta `wf:spec`, o `docs/workflow/spec/<nome-breve>.md`) e prendi il suo **nome breve**. Se non esiste, fermati e proponi `/spec <funzione>`.
+2. Trova e leggi la spec (etichetta `wf:spec`, o `<cartella>/spec/<nome-breve>.md`; `<cartella>` è `docs/workflow/` per File, `.claude/specs/` per Locale, come nella sezione 4 della skill `archivio`) e prendi il suo **nome breve**. Se non esiste, fermati e proponi `/spec <funzione>`.
 3. Esplora il codice: struttura, librerie in uso, come si lanciano i test, convenzioni. Per un'esplorazione ampia usa un sotto-agente.
 
 ## Passo 1: lo stack
@@ -69,7 +69,7 @@ Correggi quello che non va. Per piani con più di 8 passi, fai fare questa revis
 1. Mostra all'utente: lo stack, l'elenco dei passi con la modalità, i rischi. Chiedi l'approvazione e applica le correzioni.
 2. Dopo l'approvazione salva:
    - **Issues**: per ogni passo crea una sotto-issue della spec (`--parent <spec>`, etichetta `wf:passo`, titolo `Passo N – <titolo>`), con `--blocked-by` sui passi da cui dipende. Il corpo dell'issue è il blocco `### Passo N` completo (cosa, criteri, modalità, verifica, dipendenze). Poi aggiungi alla spec un commento con stack, strumento e comando di test, rischi ed elenco dei passi.
-   - **File**: `docs/workflow/piani/<nome-breve>.md`, con prima riga `Stato: aperto`, poi stack, strumento e comando di test, rischi e i passi come checklist `- [ ] Passo N – <titolo>`, ciascuno seguito dai suoi dettagli.
+   - **File o Locale**: `<cartella>/piani/<nome-breve>.md`, con prima riga `Stato: aperto`, poi stack, strumento e comando di test, rischi e i passi come checklist `- [ ] Passo N – <titolo>`, ciascuno seguito dai suoi dettagli.
 3. Chiudi:
    - **Se sei stata richiamata da `workflow`**: restituisci il riferimento al piano e termina senza proporre comandi.
    - **Altrimenti**: proponi il passo successivo, `/implementa <nome-breve>`.

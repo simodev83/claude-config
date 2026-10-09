@@ -27,7 +27,7 @@ Quando l'utente lancia `/tdd` direttamente, senza `implementa`:
 1. Carica la skill `archivio` ed esegui il suo controllo iniziale.
 2. Se il progetto usa git, lavora su un ramo `fix/<nome>` (bug) o `feature/<nome>` (novità), con `<nome>` scritto secondo le regole del nome breve. Crealo come nel passo 1 di `implementa`: prima `git status` (se ci sono modifiche non salvate, fermati e chiedi cosa farne), poi ramo principale aggiornato con `git pull --ff-only`, poi `git switch -c`. Se l'utente preferisce restare sul ramo principale, rispetta la scelta: in quel caso alla fine non si apre una pull request.
 3. Individua come si lanciano i test del progetto. Se non ci sono test, proponi lo strumento più comune per lo stack e aspetta l'ok.
-4. Alla fine: fai girare **tutti** i test e, con git, fai il commit. Poi chiedi all'utente se consegnare il lavoro. Se sì, segui la sezione 7 della skill `archivio`, con questo corpo della pull request: cosa è cambiato, quali test lo verificano, e `Closes #<numero>` se il bug ha un'issue.
+4. Alla fine: fai girare **tutti** i test e, con git, fai il commit. Poi chiedi all'utente se consegnare il lavoro. Se sì, segui la sezione 10 ("Consegna del lavoro") della skill `archivio`, con questo corpo della pull request: cosa è cambiato, quali test lo verificano, e `Closes #<numero>` se il bug ha un'issue.
 5. Se il lavoro si rivela grande (più funzioni, decisioni da prendere), fermati e proponi `/workflow` o `/spec`.
 
 ## Prima di scrivere il primo test: i punti di test
