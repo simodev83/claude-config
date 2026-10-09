@@ -47,7 +47,7 @@ Se una decisione dipende da un'altra, collegala con `--blocked-by`, oppure con l
 Con git il prototipo si costruisce in un worktree a parte, così la cartella principale del progetto resta com'era:
 
 1. Apri il worktree con i passi da 1 a 6 dell'apertura (sezione 8 della skill `archivio`), con `proto-<tema>` come nome breve e `proto/<tema>` come ramo (`<tema>` scritto con le regole del nome breve). Piano e strati non ci sono: chiedi all'utente quali dipendenze e file locali servono e prepara il worktree come al passo 8; la verifica di partenza non serve.
-2. Costruisci il minimo che risponde alla domanda della decisione, con commit sul ramo del prototipo. Anche il prototipo si scrive in TDD, con la skill `tdd`: prima il test, poi il codice. Niente push né pull request.
+2. Costruisci il minimo che risponde alla domanda della decisione, con commit sul ramo del prototipo. Anche il prototipo si scrive in TDD: carica la skill `tdd` e segui il suo ciclo e le sue regole, ma non la sezione "Se usi questa skill da sola", perché worktree, ramo e commit sono quelli di qui. Niente push né pull request.
 3. Mostra il risultato all'utente e raccogli la sua valutazione. L'esito non si scrive ancora: lo scrivi dopo la chiusura, dalla cartella principale, al punto 4 delle "Sessioni successive".
 4. Con l'ok dell'utente, chiudi: commit di quello che resta, `ExitWorktree` con `action: "keep"`, `git worktree remove "<percorso>"` e `git branch -D proto/<tema>`.
 
