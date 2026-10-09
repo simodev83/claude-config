@@ -1,6 +1,6 @@
 ---
 name: archivio
-description: Regole condivise su dove salvare requisiti, mappe, spec e piani del workflow (GitHub Issues, file in docs/workflow o cartella locale non condivisa), su come aprire e chiudere il worktree di lavoro, impilare gli strati con gh stack, usare gh e git in modo sicuro e consegnare il lavoro con pull request. Caricala quando una delle skill requisiti, spec, piano, implementa, tdd, guardia o workflow te lo chiede; non serve in nessun altro caso.
+description: Regole condivise su dove salvare requisiti, mappe, spec e piani del workflow (GitHub Issues, file in docs/workflow o cartella locale non condivisa), su come aprire e chiudere il worktree di lavoro, impilare gli strati con gh stack, usare gh e git in modo sicuro e consegnare il lavoro con pull request. Caricala quando una delle skill requisiti, spec, piano, implementa, tdd, guardia, workflow o rifletti te lo chiede; non serve in nessun altro caso.
 user-invocable: false
 ---
 
@@ -28,7 +28,7 @@ Lo stesso controllo decide anche la **consegna** del codice:
 
 Archivio e consegna si scelgono **una volta all'inizio di ogni skill**, con il controllo qui sotto, e non cambiano durante la skill.
 
-`tdd` usata da sola e `guardia` non salvano documenti: del controllo serve loro solo la consegna. Ignora le righe `Archivio workflow` e i fermi che dipendono dall'archivio (per esempio "il `CLAUDE.md` chiedeva `issues`"), salta i passi 6 e 7 e nella riga di stato ometti la parte `Archivio:`.
+`tdd` usata da sola, `guardia` e `rifletti` non salvano documenti: del controllo serve loro solo la consegna. Ignora le righe `Archivio workflow` e i fermi che dipendono dall'archivio (per esempio "il `CLAUDE.md` chiedeva `issues`"), salta i passi 6 e 7 e nella riga di stato ometti la parte `Archivio:`.
 
 ## 1. Controllo iniziale
 
@@ -184,7 +184,7 @@ Se manca la riga `Git workflow: no`, chiedi all'utente se vuole inizializzare gi
 
 ## 8. Worktree
 
-Un **worktree** è una seconda cartella dello stesso progetto, con un suo ramo: il codice nuovo si scrive lì, mentre la cartella principale resta com'era. Lo usano le skill che scrivono codice (`implementa`, `tdd`) con consegna GitHub o git locale, e i prototipi della modalità mappa (skill `requisiti`); senza git non c'è worktree.
+Un **worktree** è una seconda cartella dello stesso progetto, con un suo ramo: il codice nuovo si scrive lì, mentre la cartella principale resta com'era. Lo usano le skill che scrivono codice (`implementa`, `tdd`) con consegna GitHub o git locale, i prototipi della modalità mappa (skill `requisiti`) e la skill `rifletti` per le regole della configurazione; senza git non c'è worktree.
 
 - `<radice>`: la cartella principale del progetto, cioè la cartella che contiene la cartella stampata da `git rev-parse --path-format=absolute --git-common-dir` (funziona anche se sei già in un worktree).
 - `<percorso>`: `<radice>/.claude/worktrees/<nome-breve>`.
@@ -255,7 +255,7 @@ Uno **strato** è un pezzo del lavoro con un solo scopo, abbastanza piccolo da r
 
 ## 10. Consegna del lavoro
 
-Usata da `implementa` e da `tdd`. Prerequisito: il lavoro è su rami **diversi** dal ramo principale, con tutti i test verdi su ogni strato. Se il lavoro è sul ramo principale, **non** aprire pull request: spiega all'utente la situazione e chiedi come procedere.
+Usata da `implementa`, da `tdd` e da `rifletti`. Prerequisito: il lavoro è su rami **diversi** dal ramo principale, con tutti i test verdi su ogni strato. Se il lavoro è sul ramo principale, **non** aprire pull request: spiega all'utente la situazione e chiedi come procedere.
 
 **Corpi delle pull request.** Uno per strato, scritto con lo strumento Write in `<cartella comune>/wf/<nome-breve>/pr-<n>.md`, dove `<cartella comune>` è quella stampata da `git rev-parse --path-format=absolute --git-common-dir` e `<n>` è il numero dello strato. La struttura la dà la skill che consegna. Se la scrittura fallisce, non lanciare il comando `gh`.
 

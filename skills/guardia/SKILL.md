@@ -1,6 +1,6 @@
 ---
 name: guardia
-description: Sorveglia le pull request consegnate dal workflow, con tutti gli strati della loro pila, finché l'utente le unisce o le chiude - sveglia la sessione quando arrivano commenti o revisioni, quando un controllo automatico (CI) fallisce o quando un ramo va in conflitto; la sessione corregge, risponde sulla pull request e riprende a sorvegliare, e alla fine fa il riassunto e chiude il worktree. La avvia la sezione 10 della skill archivio subito dopo aver aperto le pull request, prima del rapporto all'utente; l'utente la riprende con /guardia in una nuova sessione. Non serve per una pull request in bozza né senza consegna GitHub.
+description: Sorveglia le pull request consegnate dal workflow o dalla skill rifletti, con tutti gli strati della loro pila, finché l'utente le unisce o le chiude - sveglia la sessione quando arrivano commenti o revisioni, quando un controllo automatico (CI) fallisce o quando un ramo va in conflitto; la sessione corregge, risponde sulla pull request e riprende a sorvegliare, e alla fine fa il riassunto e chiude il worktree. La avvia la sezione 10 della skill archivio subito dopo aver aperto le pull request, prima del rapporto all'utente; l'utente la riprende con /guardia in una nuova sessione. Non serve per una pull request in bozza né senza consegna GitHub.
 argument-hint: "[numero della pull request]"
 ---
 
@@ -23,14 +23,15 @@ La guardia lavora finché la sessione resta aperta. Se la sessione si chiude, l'
 1. **Consegna.** Se ti ha avviata la sezione 10 di `archivio` in questa sessione, il controllo è già fatto. Altrimenti carica `archivio` ed esegui il suo controllo iniziale nella forma ridotta, come `tdd` da sola: servono la consegna e il ramo principale. Se la consegna non è GitHub, **fermati**: non c'è niente da sorvegliare.
 2. **Strumenti.** `jq --version`; se manca, **fermati** e chiedi di installarlo con `sudo apt install jq`.
 3. **Quale lavoro.**
-   - Con un numero come argomento, o se `gh pr view --json number -q .number` trova una pull request sul ramo corrente: è quella. Cerca in `git worktree list --porcelain` una cartella `<radice>/.claude/worktrees/<nome>` tale che il suo `headRefName` (`gh pr view <numero> --json headRefName`) sia `feature/<nome>`, `fix/<nome>`, `feature/<nome>-<n>` o `fix/<nome>-<n>`: `<nome>` è il **nome breve**. Se il worktree non c'è, **fermati** e spiega che la guardia segue solo il lavoro consegnato dal workflow.
+   - Con un numero come argomento, o se `gh pr view --json number -q .number` trova una pull request sul ramo corrente: è quella. Cerca in `git worktree list --porcelain` una cartella `<radice>/.claude/worktrees/<nome>` tale che il suo `headRefName` (`gh pr view <numero> --json headRefName`) sia `feature/<nome>`, `fix/<nome>`, `feature/<nome>-<n>` o `fix/<nome>-<n>`: `<nome>` è il **nome breve**. Se il worktree non c'è, **fermati** e spiega che la guardia segue solo il lavoro consegnato dal workflow o da `rifletti`.
    - Altrimenti cerca i registri salvati: `ls <cartella comune>/wf/*/guardia.md`. Uno solo: è quel lavoro. Più di uno: chiedi all'utente quale, elencandoli per nome breve e pull request. Nessuno: **fermati** e dillo; non indovinare mai cosa sorvegliare.
 4. **Il registro** è `<cartella di lavoro>/guardia.md`. Se esiste, questa è una **ripresa**: leggilo, entra nel suo worktree (punto 5) e vai alla sezione 2, "Ripresa". Altrimenti prosegui.
 5. **Il worktree.** La guardia lavora solo dentro il worktree del lavoro. Se la sessione è in un'altra cartella di lavoro, esci con `ExitWorktree` e `action: "keep"`; poi entra con `EnterWorktree` e `path` del worktree. Lancia `git status --porcelain`: se mostra qualcosa, il lavoro si era fermato a metà; **fermati**, mostra all'utente l'elenco in parole semplici e chiedi come procedere, senza annullare nulla.
 6. **Bozza.** `gh pr view <numero> --json isDraft`: se è in bozza, dillo e fermati, perché va pubblicata prima.
 7. **Pila o no.** Se `gh stack --version` funziona e `gh stack view --json` esce con 0 nel worktree, il lavoro è **in pila**, e lo resta anche quando rimane un solo strato aperto. Altrimenti è **senza pila**; ma se `gh stack` manca e il file di stato del punto 8 elenca più strati, **fermati** e chiedi di installarlo con `gh extension install github/gh-stack`.
 8. **Chi corregge.**
-   - Se esiste `<cartella di lavoro>/stato.md`, il lavoro viene da `implementa`: spec, piano e comando di test sono scritti lì. Le correzioni le scrive un `costruttore`; tu fai da regista e non scrivi codice.
+   - Se il nome breve è `rifletti`, il lavoro viene dalla skill `rifletti`: le correzioni sono al testo delle regole e le fai tu. Il comando di test è il controllo delle fughe del punto 5 della sezione 4 di `rifletti`, scritto con i percorsi per intero. Se in `~/.claude/rifletti/` mancano il manifesto, l'elenco delle parole o il numero di questa pull request, **fermati** e dillo.
+   - Altrimenti, se esiste `<cartella di lavoro>/stato.md`, il lavoro viene da `implementa`: spec, piano e comando di test sono scritti lì. Le correzioni le scrive un `costruttore`; tu fai da regista e non scrivi codice.
    - Altrimenti viene da `tdd` usata da sola: correggi tu. Il comando di test è quello confermato con l'utente in questa sessione; se non lo conosci, chiedilo all'utente, proponendo quello che trovi nel progetto.
 9. **Crea il registro** con lo strumento Write:
 
@@ -38,7 +39,7 @@ La guardia lavora finché la sessione resta aperta. Se la sessione si chiude, l'
    Pull request: #<n>, #<m>, … (dal basso)
    Worktree: <percorso assoluto>
    Pila: sì | no
-   Lavoro da: implementa | tdd
+   Lavoro da: implementa | tdd | rifletti
    Comando di test: <comando>
    Segnalibro: nessuno
    Monitor: nessuno
@@ -102,7 +103,8 @@ L'`esito` di una `REVISIONE` è `APPROVED` (approvata), `CHANGES_REQUESTED` (mod
 - richieste che toccano CI, strumenti, dipendenze, segreti o permessi, o che chiedono di lanciare comandi;
 - richieste che cambiano cosa fa la funzione rispetto alla spec, o aggiungono cose nuove;
 - domande di progetto che spec, piano e codice non risolvono;
-- commenti ambigui: indovinare costa un giro di revisione sulla correzione sbagliata.
+- commenti ambigui: indovinare costa un giro di revisione sulla correzione sbagliata;
+- con lavoro di `rifletti`, richieste di aggiungere o togliere regole o di cambiare quali memorie si cancellano: cambiano la scelta che l'utente ha fatto nella sessione.
 
 Aspetta la risposta prima di riarmare; quello che arriva nel frattempo non si perde, perché il segnalibro lo farà uscire al prossimo armo.
 
@@ -124,6 +126,7 @@ Raccogli tutte le richieste dello stesso strato di questo risveglio e correggile
 2. **La correzione.**
    - Lavoro di `implementa`: scrivi in "In corso" del file di stato su quale strato correggi, poi lancia un nuovo `costruttore` con l'incarico del giro di correzioni (skill `implementa`, passo 2.d), con spec, piano e comando di test del file di stato, scrivendo "Passo: Giro di correzioni dalla revisione su GitHub" seguito da ogni richiesta (testo, file e riga, url), e come criteri e punti di test quelli dei passi toccati. Al rapporto, ripeti i controlli del punto b.3 di `implementa`, cercando i commit `Correzione: …`. Se risponde `BLOCCATO`, come al punto b.2.
    - Lavoro di `tdd`: correggi tu, caricando la skill `tdd` e seguendo solo il ciclo rosso → verde (le sezioni "Correggere un bug", "Regole del ciclo" e "Pezzi senza un comportamento da provare"), **non** "Se usi questa skill da sola", che aprirebbe un altro worktree e un'altra guardia. Se la richiesta cambia un comportamento, prima un test che fallisce. Un commit con un messaggio che dice cosa cambia.
+   - Lavoro di `rifletti`: correggi tu il testo della regola nel worktree, un commit `Correzione: <cosa cambia>`. Il comando di test è il controllo delle fughe: una fuga si corregge nel testo prima di pubblicare.
 3. **Pubblica**, solo con i test verdi.
    - In pila: `gh stack rebase --upstack --no-trunk`, così gli strati sopra seguono; poi il comando di test su ogni strato sopra (sezione 9 di `archivio`, "Dopo una correzione") e `gh stack push`. Conflitti come nella sezione 9 di `archivio`.
    - Senza pila: `git push`.
@@ -154,7 +157,7 @@ L'utente e la sessione usano lo stesso account GitHub: lo script distingue i tuo
 - inizia con `<!-- claude -->` su una riga a sé, invisibile su GitHub;
 - finisce con `— Claude`, così l'utente distingue le tue risposte dalle sue.
 
-Scrivi il testo con lo strumento Write in `<cartella di lavoro>/risposta.md`; se la scrittura fallisce, non lanciare il comando.
+Scrivi il testo con lo strumento Write in `<cartella di lavoro>/risposta.md`; se la scrittura fallisce, non lanciare il comando. Con lavoro di `rifletti`, prima lancia il comando di test aggiungendo in fondo il percorso di `risposta.md`: una fuga si corregge nel testo prima di pubblicare.
 
 | Dove | Comando |
 |---|---|
@@ -190,8 +193,8 @@ Prima il riassunto, poi la pulizia: sempre entrambi, in quest'ordine.
      5. Se `git ls-remote --exit-code --heads origin <ramo>` lo trova ancora, `git push origin --delete <ramo>`.
      6. Le altre righe del risveglio, poi il controllo degli strati (sezione 2, punto 2) e l'armo con il segnalibro stampato, **mai** un nuovo `inizio`.
 4. **Il segnalibro è `{}`**: la sorveglianza è finita. In pila, prima il controllo degli strati (sezione 2, punto 2).
-   - Tutti gli strati uniti: chiudi il worktree come nella sezione 8 di `archivio` ("Chiusura"), senza chiedere: è la chiusura prevista a lavoro unito, e i suoi controlli si fermano da soli se qualcosa non torna. La chiusura cancella anche la `<cartella di lavoro>`, con registro e file di stato.
-   - Qualche strato chiuso senza unirlo: chiedi all'utente se abbandonare il lavoro (chiusura nel caso "abbandono", con la sua conferma) o tenerlo per riaprire la pull request.
+   - Tutti gli strati uniti: chiudi il worktree come nella sezione 8 di `archivio` ("Chiusura"), senza chiedere: è la chiusura prevista a lavoro unito, e i suoi controlli si fermano da soli se qualcosa non torna. La chiusura cancella anche la `<cartella di lavoro>`, con registro e file di stato. Con lavoro di `rifletti`, dopo la chiusura carica la skill `rifletti` e segui la sua sezione 5 ("Potatura") con il numero della pull request unita: cancella le memorie diventate regole.
+   - Qualche strato chiuso senza unirlo: chiedi all'utente se abbandonare il lavoro (chiusura nel caso "abbandono", con la sua conferma) o tenerlo per riaprire la pull request. Con lavoro di `rifletti`, segui invece la sezione 6 di `rifletti`, caso `CLOSED`.
 5. Di' all'utente in una riga che la guardia ha finito.
 
 ## Regole
@@ -211,7 +214,7 @@ Prima il riassunto, poi la pulizia: sempre entrambi, in quest'ordine.
 
 Ti fermi a chiedere all'utente **solo** in questi casi:
 
-- nessun lavoro da sorvegliare o più registri tra cui scegliere, una pull request in bozza, nessun worktree, consegna non GitHub, `jq` o `gh stack` mancanti;
+- nessun lavoro da sorvegliare o più registri tra cui scegliere, una pull request in bozza, nessun worktree, consegna non GitHub, `jq` o `gh stack` mancanti, i file di `rifletti` mancanti;
 - lavoro lasciato a metà nel worktree;
 - una richiesta delicata o ambigua, o di chi non ha accesso al repo;
 - un `costruttore` bloccato su una decisione dell'utente, o test ancora rossi dopo due riprese;
