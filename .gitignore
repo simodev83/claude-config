@@ -1,0 +1,17 @@
+# Tutto escluso, tranne la configurazione elencata sotto.
+# Così chiavi, cronologia, memorie e cartelle nuove che Claude Code
+# creerà in futuro restano fuori dal repo senza doverle elencare.
+/*
+
+!/.gitignore
+!/.gitattributes
+!/CLAUDE.md
+!/LEGGIMI.md
+!/settings.json
+!/statusline-command.sh
+!/hooks/
+!/agents/
+!/skills/
+
+# Skill sincronizzate da claude.ai: le gestisce Anthropic.
+/skills/synced/
