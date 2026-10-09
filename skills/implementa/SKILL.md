@@ -153,7 +153,7 @@ Con tutti gli strati chiusi (con più strati e consegna GitHub, dalla cima della
 
 ## Passo 4: consegna
 
-Segui la sezione 10 ("Consegna del lavoro") della skill `archivio`. I contenuti vengono dalle note per la consegna del file di stato.
+Segui la sezione 10 ("Consegna del lavoro") della skill `archivio`, compreso l'avvio della guardia con consegna GitHub. I contenuti vengono dalle note per la consegna del file di stato.
 
 **Con consegna GitHub**, un corpo per strato, con questa struttura:
 
@@ -207,7 +207,8 @@ Dai all'utente, in breve e in parole semplici:
 - gli strati divisi durante il lavoro perché erano cresciuti troppo, se ce ne sono;
 - i pezzi senza test e come sono stati controllati;
 - cosa controllare prima di unire il lavoro;
-- con git, che il worktree resta aperto: quando il lavoro è unito può chiedere a Claude di chiuderlo (sezione 8 della skill `archivio`, "Chiusura").
+- con consegna GitHub, che la guardia sorveglia le pull request finché la sessione resta aperta: risponde ai commenti, corregge, tiene aggiornati i rami e, quando le ha unite tutte, chiude il worktree; se chiude la sessione, la riprende con `/guardia`;
+- con consegna git locale, che il worktree resta aperto: quando il lavoro è unito può chiedere a Claude di chiuderlo (sezione 8 della skill `archivio`, "Chiusura").
 
 Se sei stata richiamata da `workflow`, non scriverlo all'utente: restituisci queste stesse voci al workflow, che le mostrerà nel suo riepilogo finale.
 

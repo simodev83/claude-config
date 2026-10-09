@@ -34,9 +34,10 @@ Quando l'utente lancia `/tdd` direttamente, senza spec né piano:
 6. **Punti di test**, poi il ciclo, come descritto sotto.
 7. **Verifica finale.** Fai girare **tutti** i test, più linter e controllo dei tipi se il progetto li ha. Con git, fai il commit dei soli file del lavoro, indicati per nome, con un messaggio che dice in una frase cosa cambia per chi usa il programma (per esempio `Il totale del carrello tiene conto dello sconto`).
 8. **Consegna.** Chiedi all'utente se consegnare il lavoro.
-   - Se sì, segui la sezione 10 di `archivio` con uno strato solo. Con consegna GitHub il titolo della pull request è il messaggio del commit, e il corpo dice: cosa è cambiato, quali test lo verificano, i controlli concreti fatti sui pezzi senza test, e `Closes #<numero>` se il bug ha un'issue.
+   - Se sì, segui la sezione 10 di `archivio` con uno strato solo, compreso l'avvio della guardia con consegna GitHub. Con consegna GitHub il titolo della pull request è il messaggio del commit, e il corpo dice: cosa è cambiato, quali test lo verificano, i controlli concreti fatti sui pezzi senza test, e `Closes #<numero>` se il bug ha un'issue.
    - Se no, digli dove resta il lavoro (il ramo e la cartella del worktree) e che può riprenderlo rilanciando `/tdd` con lo stesso obiettivo.
-   - Con git, ricordagli infine che il worktree resta aperto: quando il lavoro è unito, o se vuole abbandonarlo, può chiedere a Claude di chiuderlo. La chiusura si fa solo su sua richiesta, come nella sezione 8 di `archivio` ("Chiusura"), che controlla da sé se il merge è avvenuto.
+   - Con la pull request aperta, digli che la guardia la sorveglia finché la sessione resta aperta e, quando l'ha unita, chiude il worktree; se chiude la sessione, la riprende con `/guardia`.
+   - Negli altri casi con git, ricordagli che il worktree resta aperto: quando il lavoro è unito, o se vuole abbandonarlo, può chiedere a Claude di chiuderlo. La chiusura si fa solo su sua richiesta, come nella sezione 8 di `archivio` ("Chiusura"), che controlla da sé se il merge è avvenuto.
 
 ## Prima di scrivere il primo test: i punti di test
 

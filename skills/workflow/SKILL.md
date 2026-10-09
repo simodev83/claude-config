@@ -12,7 +12,7 @@ Tema: $ARGUMENTS (se è vuoto, chiedi all'utente cosa vuole costruire, in una fr
 Il regista non fa il lavoro delle fasi: le richiama nell'ordine giusto, controlla che ognuna sia approvata e tiene l'utente informato su dove si trova.
 
 ```
-requisiti ──ok──▶ spec ──ok──▶ piano ──ok──▶ implementa ──▶ pull request ──▶ Merge (utente)
+requisiti ──ok──▶ spec ──ok──▶ piano ──ok──▶ implementa ──▶ pull request ──▶ guardia ──▶ merge (utente)
 ```
 
 ## Passo 0: archivio e stato
@@ -61,7 +61,7 @@ Tutto ciò che ogni fase produce è salvato nell'archivio, quindi il lavoro può
 Quando le pull request sono aperte (o il ramo è pronto):
 
 - riepiloga in poche righe requisiti, spec e piano, con i collegamenti;
-- mostra le voci restituite da `implementa`: le pull request nell'ordine in cui unirle, la tabella dei criteri, revisione, strati divisi, pezzi senza test, cosa controllare e il worktree rimasto aperto;
+- mostra le voci restituite da `implementa`: le pull request nell'ordine in cui unirle, la tabella dei criteri, revisione, strati divisi, pezzi senza test, cosa controllare, e la guardia al lavoro (o il worktree rimasto aperto, con consegna git locale);
 - ricorda che il merge spetta all'utente;
 - se restano altre funzioni dai requisiti, proponi la prossima con `/workflow <funzione>`;
 - se non ne restano, chiedi all'utente se chiudere i requisiti (issue `wf:requisiti` chiusa con un commento, oppure `Stato: chiuso` nel file).
