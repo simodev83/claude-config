@@ -13,6 +13,7 @@
 !/LICENSES/
 !/agents/
 !/skills/
+!/rules/
 
 # Skill sincronizzate da claude.ai: le gestisce Anthropic.
 /skills/synced/
