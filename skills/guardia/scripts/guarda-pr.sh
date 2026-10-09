@@ -6,7 +6,7 @@
 #
 # Adattato da skills/shepherd/scripts/watch-pr.sh di palazzem/claude-config
 # (https://github.com/palazzem/claude-config, licenza Apache 2.0, copia in
-# LICENSE-apache-2.0.txt). Modifiche: nomi e messaggi in italiano; INDIETRO
+# LICENSES/Apache-2.0.txt). Modifiche: nomi e messaggi in italiano; INDIETRO
 # solo quando GitHub blocca il merge, non a ogni spostamento della base; la CI
 # ricorda il commit in cima, così un nuovo commit che fallisce sveglia anche se
 # la CI era già fallita; inizio accetta più PR, per le pile che GitHub non

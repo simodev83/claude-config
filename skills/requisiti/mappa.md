@@ -18,7 +18,7 @@ Una sola issue (etichetta `wf:mappa`, titolo `Mappa – <tema>`) oppure il file 
 <contesto, preferenze stabili dell'utente, skill da consultare>
 
 ## Decisioni finora
-- <titolo della decisione (#N)>: <l'esito in una riga>
+- <titolo della decisione (#N, o il percorso del file)>: <l'esito in una riga>
 
 ## Nebbia
 - <decisioni che si intravedono ma non si sanno ancora formulare bene>
@@ -47,8 +47,8 @@ Se una decisione dipende da un'altra, collegala con `--blocked-by`, oppure con l
 Con git il prototipo si costruisce in un worktree a parte, così la cartella principale del progetto resta com'era:
 
 1. Apri il worktree con i passi da 1 a 6 dell'apertura (sezione 8 della skill `archivio`), con `proto-<tema>` come nome breve e `proto/<tema>` come ramo (`<tema>` scritto con le regole del nome breve). Piano e strati non ci sono: chiedi all'utente quali dipendenze e file locali servono e prepara il worktree come al passo 8; la verifica di partenza non serve.
-2. Costruisci il minimo che risponde alla domanda della decisione, con commit sul ramo del prototipo. Il prototipo non segue il TDD: serve a vedere, poi si butta. Niente push né pull request.
-3. Mostra il risultato all'utente e scrivi l'esito nella decisione. In modalità File o Locale il file della decisione è nella cartella principale: scrivilo con il percorso assoluto.
+2. Costruisci il minimo che risponde alla domanda della decisione, con commit sul ramo del prototipo. Anche il prototipo si scrive in TDD, con la skill `tdd`: prima il test, poi il codice. Niente push né pull request.
+3. Mostra il risultato all'utente e raccogli la sua valutazione. L'esito non si scrive ancora: lo scrivi dopo la chiusura, dalla cartella principale, al punto 4 delle "Sessioni successive".
 4. Con l'ok dell'utente, chiudi: commit di quello che resta, `ExitWorktree` con `action: "keep"`, `git worktree remove "<percorso>"` e `git branch -D proto/<tema>`.
 
 Senza git lavora in una cartella temporanea fuori dal progetto e, con l'ok dell'utente, cancellala alla fine.
@@ -56,7 +56,7 @@ Senza git lavora in una cartella temporanea fuori dal progetto e, con l'ok dell'
 ## Sessione 1: tracciare la mappa
 
 1. Con l'utente, definisci la **destinazione** in una o due righe.
-2. Crea subito la mappa con la sola destinazione: serve il suo numero per agganciare le decisioni.
+2. Crea subito la mappa con la sola destinazione: con Issues serve il suo numero per agganciare le decisioni.
 3. Individua le prime decisioni già formulabili e crea le loro sotto-issue della mappa (o i loro file); il resto va in **Nebbia**.
 4. Completa il corpo della mappa (Note, Nebbia, Fuori perimetro) con `gh issue edit`, oppure aggiornando il file in modalità File o Locale. Mostrala all'utente e fermati.
 
@@ -65,7 +65,7 @@ Senza git lavora in una cartella temporanea fuori dal progetto e, con l'ok dell'
 1. Leggi la mappa (una volta sola) e le decisioni aperte: le sotto-issue aperte, o i file con `Stato: aperto`.
 2. La **frontiera** è l'insieme delle decisioni aperte non bloccate da altre decisioni aperte. Proponi all'utente quale risolvere, con il tuo consiglio.
 3. Risolvi **solo quella**, nel modo del suo tipo.
-4. Scrivi l'esito come commento nell'issue e chiudila (in modalità File o Locale: in fondo al file, con `Stato: chiuso`), poi aggiungi una riga in **Decisioni finora**.
+4. Scrivi l'esito come commento nell'issue e chiudila (in modalità File o Locale: in fondo al file, e la prima riga diventa `Stato: chiuso`), poi aggiungi una riga in **Decisioni finora**.
 5. Guarda la **Nebbia**: se una voce ora si può formulare, trasformala in una nuova decisione.
 6. **Fermati.** Una decisione per sessione tiene il contesto pulito.
 
@@ -74,5 +74,5 @@ Senza git lavora in una cartella temporanea fuori dal progetto e, con l'ok dell'
 La mappa è completa quando non ci sono decisioni aperte e la Nebbia è vuota. Allora:
 
 1. Scrivi i requisiti finali come nel passo 3 della skill `requisiti`, raccogliendo le decisioni della mappa.
-2. Chiudi la mappa con un commento che rimanda ai requisiti (in modalità File o Locale: il rimando in fondo al file, con `Stato: chiuso`).
+2. Chiudi la mappa con un commento che rimanda ai requisiti (in modalità File o Locale: il rimando in fondo al file, e la prima riga diventa `Stato: chiuso`).
 3. Chiudi come nel passo 4 della skill `requisiti`: se sei stata richiamata da `workflow` restituisci il riferimento e termini, altrimenti proponi `/spec` per la prima funzione.

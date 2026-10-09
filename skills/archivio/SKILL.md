@@ -4,6 +4,8 @@ description: Regole condivise su dove salvare requisiti, mappe, spec e piani del
 user-invocable: false
 ---
 
+<!-- Adattata in parte da skills/deliver/SKILL.md e skills/gh-stack/SKILL.md di palazzem/claude-config (licenza Apache 2.0, copia in LICENSES/Apache-2.0.txt); riscritta in italiano e modificata. -->
+
 # Archivio del workflow
 
 Le skill del workflow (`requisiti`, `spec`, `piano`, `implementa`, `tdd`, `guardia`, `workflow`) salvano e leggono i loro documenti in un **archivio**, di tre tipi:
@@ -165,7 +167,7 @@ Le cartelle e i file che non devono mai finire nel repo, ma che riguardano solo 
 
 ## 6. Nome breve
 
-Ogni funzione ha un **nome breve**, deciso nella spec: minuscolo, senza accenti, con trattini al posto degli spazi (per esempio `export-csv`). È lo stesso nei file, nei rami, nel worktree (`.claude/worktrees/export-csv`) e nelle ricerche. Se l'utente scrive il nome della funzione in un altro modo ("Export CSV"), cerca la spec corrispondente e usa il suo nome breve.
+Ogni funzione ha un **nome breve**, deciso nella spec: minuscolo, senza accenti, con trattini al posto degli spazi (per esempio `export-csv`). È lo stesso nei file, nei rami, nel worktree (`.claude/worktrees/export-csv`) e nelle ricerche. Non finisce mai con un trattino e un numero (`export-csv-2`): quella forma è riservata ai rami degli strati (sezione 9). Se l'utente scrive il nome della funzione in un altro modo ("Export CSV"), cerca la spec corrispondente e usa il suo nome breve.
 
 ## 7. Progetto senza git
 
@@ -182,7 +184,7 @@ Se manca la riga `Git workflow: no`, chiedi all'utente se vuole inizializzare gi
 
 ## 8. Worktree
 
-Un **worktree** è una seconda cartella dello stesso progetto, con un suo ramo: il codice nuovo si scrive lì, mentre la cartella principale resta com'era. Lo usano le skill che scrivono codice (`implementa`, `tdd`) con consegna GitHub o git locale; senza git non c'è worktree.
+Un **worktree** è una seconda cartella dello stesso progetto, con un suo ramo: il codice nuovo si scrive lì, mentre la cartella principale resta com'era. Lo usano le skill che scrivono codice (`implementa`, `tdd`) con consegna GitHub o git locale, e i prototipi della modalità mappa (skill `requisiti`); senza git non c'è worktree.
 
 - `<radice>`: la cartella principale del progetto, cioè la cartella che contiene la cartella stampata da `git rev-parse --path-format=absolute --git-common-dir` (funziona anche se sei già in un worktree).
 - `<percorso>`: `<radice>/.claude/worktrees/<nome-breve>`.

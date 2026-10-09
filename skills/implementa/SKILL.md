@@ -4,6 +4,8 @@ description: Il regista della costruzione - a partire da spec e piano apre il wo
 argument-hint: "<funzione>"
 ---
 
+<!-- Adattata in parte da skills/deliver/SKILL.md di palazzem/claude-config (licenza Apache 2.0, copia in LICENSES/Apache-2.0.txt); riscritta in italiano e modificata. -->
+
 # Implementa: il regista della costruzione
 
 Funzione: $ARGUMENTS (se è vuoto, chiedi quale funzione costruire).

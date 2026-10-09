@@ -2,7 +2,7 @@
 # degli eventi e poi il segnalibro. Riceve $armato, $ultimo, $epoca e $marcatore.
 #
 # Adattato da skills/shepherd/scripts/jq/pass.jq di palazzem/claude-config
-# (licenza Apache 2.0, copia in LICENSE-apache-2.0.txt); modificato.
+# (licenza Apache 2.0, copia in LICENSES/Apache-2.0.txt); modificato.
 
 include "lib";
 

@@ -4,7 +4,7 @@ description: Sorveglia le pull request consegnate dal workflow, con tutti gli st
 argument-hint: "[numero della pull request]"
 ---
 
-<!-- Adattata da skills/shepherd/SKILL.md di palazzem/claude-config (licenza Apache 2.0, copia in scripts/LICENSE-apache-2.0.txt); riscritta in italiano e modificata. -->
+<!-- Adattata da skills/shepherd/SKILL.md di palazzem/claude-config (licenza Apache 2.0, copia in LICENSES/Apache-2.0.txt); riscritta in italiano e modificata. -->
 
 # Guardia: dalle pull request al merge
 

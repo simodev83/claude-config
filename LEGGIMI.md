@@ -31,7 +31,7 @@ In un progetto scrivi `/workflow <cosa vuoi costruire>`. Claude:
 1. ti fa domande finché è chiaro cosa serve (requisiti) e scrive il contratto della funzione, con i criteri per dire che funziona (spec);
 2. divide il lavoro in passi piccoli, raggruppati in strati: ogni strato diventerà una pull request da rileggere (piano);
 3. dopo il tuo ok su questi tre documenti costruisce da solo, in una cartella a parte (worktree) che non tocca il tuo lavoro: un agente per passo, sempre con il test prima del codice, poi riordino e revisione di ogni strato e un collaudo finale criterio per criterio;
-4. apre le pull request e resta a sorvegliarle: risponde ai commenti e corregge finché non le unisci tu.
+4. se il progetto è su GitHub apre le pull request e resta a sorvegliarle: risponde ai commenti e corregge finché non le unisci tu; altrimenti lascia un ramo pronto da unire.
 
 Si ferma a chiederti qualcosa solo quando serve una tua decisione. Per un bug basta `/tdd <cosa non funziona>`.
 
@@ -65,6 +65,13 @@ WSL fa girare Ubuntu dentro Windows. Claude Code, gli strumenti qui sopra e i pr
 3. Tieni i progetti nella cartella di Ubuntu (`~/...`), non nei dischi di Windows (`/mnt/c/...`): lì tutto è molto più lento e i permessi dei file non funzionano bene.
 
 ### Scaricare la configurazione
+
+Prima rendi attivo l'account giusto e fai usare a git l'accesso di `gh`:
+
+```bash
+gh auth switch -u simodev83
+gh auth setup-git
+```
 
 Se `~/.claude` non esiste ancora:
 
@@ -115,12 +122,14 @@ Nel `CLAUDE.md` di un progetto (condiviso con chi usa il repo) oppure nel `CLAUD
 - `Archivio workflow: locale` → documenti in `.claude/specs/`, solo su questo computer: adatto ai repo di lavoro, dove il team non deve vederli; le pull request si aprono come sempre
 - `Git workflow: no` → progetto senza git: le skill non ti chiederanno più di inizializzarlo
 
-Se il repo appartiene a un'organizzazione e non hai fissato nulla, la prima volta Claude ti chiede dove salvare i documenti e scrive la risposta nel `CLAUDE.local.md`.
+Se non fissi nulla: GitHub Issues se il repo è su GitHub ed è tuo; file in `docs/workflow/` se il progetto non è su GitHub. Se il repo appartiene a un'organizzazione, la prima volta Claude ti chiede dove salvare i documenti e scrive la risposta nel `CLAUDE.local.md`.
+
+Se crei tu a mano il `CLAUDE.local.md`, escludilo dal repo: `echo /CLAUDE.local.md >> "$(git rev-parse --git-path info/exclude)"`.
 
 ## Crediti
 
 Il metodo di interrogatorio, la modalità mappa e le regole del TDD sono ispirati a [mattpocock/skills](https://github.com/mattpocock/skills) (licenza MIT) di Matt Pocock. I testi di queste skill sono scritti da zero, in italiano.
 
-Gli agenti `costruttore` e `ricercatore`, il modo di lavorare per strati e la guardia sono adattati da [palazzem/claude-config](https://github.com/palazzem/claude-config) (licenza Apache 2.0, copia in `skills/guardia/scripts/LICENSE-apache-2.0.txt`). I testi sono riscritti in italiano e modificati; i file adattati lo dichiarano in testa. Lo script della guardia (`skills/guardia/scripts/`) è una versione modificata di quello della skill `shepherd`: le modifiche sono elencate in testa a `guarda-pr.sh`.
+Gli agenti `costruttore` e `ricercatore`, la regia di `implementa`, il modo di lavorare per strati con `gh stack` (skill `piano`, `implementa` e `archivio`) e la guardia sono adattati da [palazzem/claude-config](https://github.com/palazzem/claude-config) (licenza Apache 2.0, copia in `LICENSES/Apache-2.0.txt`). I testi sono riscritti in italiano e modificati; i file adattati lo dichiarano in testa. Lo script della guardia (`skills/guardia/scripts/`) è una versione modificata di quello della skill `shepherd`: le modifiche sono elencate in testa a `guarda-pr.sh`.
 
 Le prove dello script si lanciano con `skills/guardia/scripts/prove/prova.sh` (servono `bash`, `jq` e `timeout`).

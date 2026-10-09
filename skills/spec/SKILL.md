@@ -32,7 +32,12 @@ Proponi i punti di test, preferendo quelli già esistenti e il più "in alto" po
 
 ## Passo 3: scrivi la spec
 
-Scegli il **nome breve** della funzione (regole nella sezione 6 della skill `archivio`, per esempio `export-csv`) e scrivilo in testa alla spec: lo useranno piano, ramo e file. Prima controlla che sia libero: nessun'altra spec con lo stesso nome nell'archivio e, con git, niente in `git worktree list` e in `git branch --list "*/<nome-breve>*"`. Se è già usato, scegline un altro.
+Scegli il **nome breve** della funzione (regole nella sezione 6 della skill `archivio`, per esempio `export-csv`) e scrivilo in testa alla spec: lo useranno piano, ramo e file. Prima controlla che sia libero:
+
+- nell'archivio: con Issues `gh issue list --label "wf:spec" --state all --search "\"Nome breve: <nome-breve>\""`, con File o Locale il file `<cartella>/spec/<nome-breve>.md`;
+- con git: il worktree `.claude/worktrees/<nome-breve>` in `git worktree list` e i rami di `git branch --list "*/<nome-breve>*"`.
+
+Se è già usato per la stessa funzione, chiedi all'utente se aggiornare la spec esistente; altrimenti scegline un altro.
 
 ```markdown
 Nome breve: <nome-breve>

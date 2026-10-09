@@ -4,6 +4,8 @@ description: Scompone la spec di una funzione in passi piccoli, ordinati e verif
 argument-hint: "<funzione>"
 ---
 
+<!-- Adattata in parte da skills/deliver/SKILL.md di palazzem/claude-config (licenza Apache 2.0, copia in LICENSES/Apache-2.0.txt); riscritta in italiano e modificata. -->
+
 # Piano: la sequenza di lavoro
 
 Funzione: $ARGUMENTS (se è vuoto, chiedi per quale spec fare il piano).
@@ -26,7 +28,7 @@ Lo **strumento di test** fa parte dello stack e si decide qui, con il comando pe
 
 Se va scelto, o se la funzione richiede un componente nuovo (una libreria, un servizio esterno):
 
-- proponi **2 o 3 opzioni** con pro e contro concreti, ordinate secondo le regole del `CLAUDE.md` sulle decisioni: per qualità del risultato, con costi e fatica scritti come avvertenze;
+- proponi **2 o 3 opzioni** con pro e contro concreti, ordinate secondo le regole del `CLAUDE.md` sulle decisioni: per qualità del risultato, con costi e fatica scritti come avvertenze, più l'opzione "da zero";
 - verifica le informazioni con l'agente `ricercatore`: una domanda per agente, con libreria e versione; le domande indipendenti lanciale insieme. Riporta i link che restituisce e, se una risposta è `NON VERIFICATO`, dillo all'utente così com'è;
 - indica la tua raccomandazione;
 - **aspetta la scelta dell'utente** prima di proseguire.
