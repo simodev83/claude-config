@@ -41,7 +41,7 @@ Leggi la spec. Poi le modifiche: con git, lancia tu `git log <intervallo>` e `gi
 
 - Codice duplicato, nomi poco chiari, funzioni troppo lunghe o complicate senza motivo.
 - Errori ignorati in silenzio.
-- Regole del linter disattivate o avvisi nascosti (`eslint-disable`, `# noqa`, `@ts-ignore`, `# type: ignore` e simili).
+- Regole del linter disattivate o avvisi nascosti, nel codice (`eslint-disable`, `# noqa`, `@ts-ignore`, `# type: ignore` e simili) o nei file di configurazione (`per-file-ignores`, `ignore`, regole spente o abbassate ad avviso); l'unica eccezione è quella concessa dall'utente con un motivo e una scadenza.
 - Docstring mancanti o che ripetono la firma; commenti che non spiegano un "perché".
 - Un modo di fare diverso da quello del progetto, oppure copiato da codice esistente che viola le buone pratiche.
 

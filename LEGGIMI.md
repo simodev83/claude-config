@@ -61,7 +61,7 @@ Su Ubuntu, o dentro WSL su Windows. Il repo è privato: serve `gh` con l'account
 
 - Claude Code, installato come indica la sua documentazione per Linux.
 - `git`, `jq` e `timeout` (questo c'è già in Ubuntu): `sudo apt install git jq`.
-- `gh` (GitHub CLI) almeno alla versione 2.101, installato seguendo la sua guida ufficiale per Ubuntu: il pacchetto `gh` di Ubuntu è troppo vecchio. Poi `gh auth login` una volta per ogni account (simodev83 e SimoneBEN324); per passare dall'uno all'altro, `gh auth switch`.
+- `gh` (GitHub CLI) almeno alla versione 2.101, installato seguendo la sua guida ufficiale per Ubuntu: il pacchetto `gh` di Ubuntu è troppo vecchio. Poi `gh auth login` una volta per ogni account (simodev83 e SimoneBEN324); per passare dall'uno all'altro, `gh auth switch`. Ogni account deve avere anche il permesso `workflow`, senza il quale GitHub rifiuta i commit che toccano i controlli automatici (`.github/workflows`): lancialo, per ogni account attivo, in un terminale normale e non dentro Claude, perché chiede di premere Invio e di confermare nel browser: `gh auth refresh -h github.com -s workflow`.
 - L'estensione per le pull request a strati: `gh extension install github/gh-stack`.
 
 ### Su Windows, con WSL
