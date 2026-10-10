@@ -48,7 +48,7 @@ La guardia lavora finché la sessione resta aperta. Se la sessione si chiude, l'
    - <quando dell'evento> · PR #<n> · <evento> di <login> · <url> · gestito il <data e ora> · <cosa hai fatto>
    ```
 
-   Ogni evento gestito diventa una riga di `Gestito`, con il `quando` dell'evento così come lo stampa lo script: serve a riconoscere un evento già gestito, ai riassunti e alle riprese.
+   Ogni evento gestito diventa una riga di `Gestito`, con il `quando` dell'evento così come lo stampa lo script: serve a riconoscere un evento già gestito, ai riassunti e alle riprese. Aggiungi le righe e cambia segnalibro e monitor con lo strumento Edit, mai con `echo` o `sed` nella shell: un apostrofo nel testo romperebbe le virgolette.
 
 ## 2. Sorveglianza
 
@@ -83,7 +83,7 @@ Ogni riga ha `pr`, la pull request su cui è successo, e un risveglio può rigua
 |---|---|---|
 | `COMMENTO`, `REVISIONE`, `RISPOSTA` | Qualcuno ha scritto: nella conversazione, con una revisione, o in un thread sul codice | Lo leggi all'`url` (tabella sotto). Una richiesta di modifica → "Una modifica"; una domanda → rispondi (sezione 4); un'approvazione senza testo → solo una riga nel registro |
 | `INDIETRO`, `CONFLITTO` | GitHub non permette il merge finché il ramo non si aggiorna, oppure il ramo è in conflitto con la sua base | "Ramo da aggiornare", una volta per risveglio |
-| `CI_FALLITA` | Un controllo automatico sul commit in cima è fallito | Leggi `gh pr checks <pr>` e il registro del controllo fallito (`gh run view <id> --log-failed`). Causa nel codice → "Una modifica". Causa chiaramente esterna (rete, servizio esterno fermo, macchina della CI) → `gh run rerun <id> --failed`, **una volta sola per commit in cima**: annotalo nel registro con il commit; se lo stesso commit fallisce di nuovo, decide l'utente. Causa che non sai attribuire → all'utente |
+| `CI_FALLITA` | Un controllo automatico sul commit in cima è fallito | Leggi `gh pr checks <pr>` e il registro del controllo fallito (`gh run view <id> --log-failed`). Causa in un commit di qualcun altro, cioè non scritto dalla sessione né da un `costruttore` → all'utente, con le opzioni (annullarlo con una correzione, oppure cambiare la spec): è una scelta sua, anche se il commit porta il suo nome. Altra causa nel codice → "Una modifica". Causa chiaramente esterna (rete, servizio esterno fermo, macchina della CI) → `gh run rerun <id> --failed`, **una volta sola per commit in cima**: annotalo nel registro con il commit; se lo stesso commit fallisce di nuovo, decide l'utente. Causa che non sai attribuire → all'utente |
 | `UNITA`, `CHIUSA` | Lo strato è unito o chiuso | Sezione 5, prima di ogni altra riga |
 
 L'`esito` di una `REVISIONE` è `APPROVED` (approvata), `CHANGES_REQUESTED` (modifiche richieste), `COMMENTED` (solo commenti) o `DISMISSED` (ritirata: succede anche da sola dopo un push, se il repo annulla le approvazioni vecchie). Una revisione ritirata va solo nel registro e nel riassunto. Una revisione con commenti sul codice arriva come una riga `REVISIONE` più una riga `RISPOSTA` per ogni commento: gestiscile insieme e rispondi nel thread di ciascuno.
@@ -110,11 +110,14 @@ Aspetta la risposta prima di riarmare; quello che arriva nel frattempo non si pe
 
 ### Prima di toccare un ramo
 
-Su GitHub qualcuno può aver aggiunto commit a un ramo, per esempio accettando un suggerimento in una revisione. Prima di cambiare un ramo (in pila: quello dell'evento e tutti quelli sopra) lancia `git fetch origin` e, per ogni ramo, `git rev-list --count <ramo>..origin/<ramo>`:
+Su GitHub qualcuno può aver aggiunto commit a un ramo, per esempio accettando un suggerimento in una revisione; e quando l'utente unisce uno strato, GitHub stesso ribasa il ramo dello strato sopra sul ramo principale, con gli stessi commit ma identificativi nuovi. Prima di cambiare un ramo (in pila: quello dell'evento e tutti quelli sopra) lancia `git fetch origin` e, per ogni ramo, `git rev-list --count <ramo>..origin/<ramo>`:
 
 - `0`: niente di nuovo;
 - più di 0 e `git merge-base --is-ancestor <ramo> origin/<ramo>` riesce: spostati sul ramo e `git merge --ff-only origin/<ramo>`;
+- più di 0 e `git cherry origin/<ramo> <ramo>` non stampa nessuna riga che inizia con `+`: ogni commit locale è già su GitHub, anche con un identificativo diverso. Spostati sul ramo e `git reset --keep origin/<ramo>`: non si perde nulla e non si ripubblica nulla;
 - altrimenti il ramo è cambiato sia qui sia su GitHub: **fermati** e dillo.
+
+I commit arrivati da GitHub in questo modo e non scritti dalla sessione sono "di qualcun altro": se poi un controllo fallisce per colpa loro, vale la riga `CI_FALLITA` della tabella.
 
 ### Una modifica
 
@@ -187,8 +190,8 @@ Prima il riassunto, poi la pulizia: sempre entrambi, in quest'ordine.
    - Se in questo risveglio c'è una riga `CHIUSA`: **fermati** e chiedi all'utente come procedere. Niente aggiornamenti, pulizia né armo.
    - Altrimenti, per ogni `UNITA`:
      1. Trova il ramo dello strato unito dalla pila locale, come in "Una modifica" punto 1, prima che sparisca.
-     2. Per la pull request dello strato subito sopra, se `gh pr view <pr> --json baseRefName -q .baseRefName` è il ramo unito, `gh pr edit <pr> --base <principale>`: altrimenti cancellare il ramo unito su GitHub la chiuderebbe.
-     3. "Prima di toccare un ramo" per gli strati rimasti, poi `gh stack sync --prune`: ribasa gli strati rimasti sul ramo principale aggiornato, li pubblica e cancella il ramo locale unito. È l'unica pubblicazione che avviene prima dei test, perché il comando fa le due cose insieme: se nell'uscita c'è `Sync aborted`, **fermati** e dillo; per un conflitto, come al punto 2 di "Ramo da aggiornare" in pila, poi `gh stack push`.
+     2. Per la pull request dello strato subito sopra, se `gh pr view <pr> --json baseRefName -q .baseRefName` è il ramo unito, `gh pr edit <pr> --base <principale>`: altrimenti cancellare il ramo unito su GitHub la chiuderebbe. Di solito GitHub l'ha già fatto da solo pochi secondi dopo il merge.
+     3. "Prima di toccare un ramo" per gli strati rimasti: se GitHub ha già ribasato lo strato sopra, qui lo prendi così com'è. Poi `gh stack sync --prune`: ribasa gli strati rimasti sul ramo principale aggiornato, li pubblica e cancella il ramo locale unito. È l'unica pubblicazione che avviene prima dei test, perché il comando fa le due cose insieme: se nell'uscita c'è `Sync aborted`, **fermati** e dillo; per un conflitto, come al punto 2 di "Ramo da aggiornare" in pila, poi `gh stack push`.
      4. Il comando di test su ogni strato rimasto; se uno è rosso, è "Una modifica" su quello strato.
      5. Se `git ls-remote --exit-code --heads origin <ramo>` lo trova ancora, `git push origin --delete <ramo>`.
      6. Le altre righe del risveglio, poi il controllo degli strati (sezione 2, punto 2) e l'armo con il segnalibro stampato, **mai** un nuovo `inizio`.
@@ -218,7 +221,7 @@ Ti fermi a chiedere all'utente **solo** in questi casi:
 - lavoro lasciato a metà nel worktree;
 - una richiesta delicata o ambigua, o di chi non ha accesso al repo;
 - un `costruttore` bloccato su una decisione dell'utente, o test ancora rossi dopo due riprese;
-- una CI fallita per una causa che non sai attribuire, o di nuovo dopo il rilancio;
+- una CI fallita per una causa che non sai attribuire, per un commit di qualcun altro, o di nuovo dopo il rilancio;
 - un ramo cambiato sia qui sia su GitHub, un conflitto che non si risolve senza scrivere logica nuova, `Sync aborted`, un push rifiutato o un errore di permessi;
 - una pull request della pila che la guardia non vede, o uno stato diverso da quello dello script;
 - uno strato chiuso senza unirlo;
