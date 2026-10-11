@@ -35,7 +35,7 @@ Ogni decisione è una sotto-issue della mappa (`--parent <mappa>`, etichetta `wf
 
 | Tipo | Come si risolve | Serve l'utente? |
 |---|---|---|
-| `[Interrogatorio]` | Round di domande come nella skill `requisiti`, limitati a questa decisione | Sì |
+| `[Interrogatorio]` | Domande una alla volta come nel passo 2 della skill `requisiti`, limitate a questa decisione | Sì |
 | `[Prototipo]` | Si costruisce qualcosa **da buttare** per vedere come si comporta, a parte (sezione "Prototipi" qui sotto), e si scrive l'esito nella decisione. Il prototipo non si unisce mai al progetto | Sì, per valutarlo |
 | `[Ricerca]` | Si chiede all'agente `ricercatore` cosa dicono documentazione e fonti ufficiali, una domanda per agente (quelle indipendenti insieme), e si riporta la risposta con citazioni e link; una risposta `NON VERIFICATO` resta tale | No |
 | `[Compito]` | Un lavoro manuale che **sblocca** una decisione (per esempio chiedere un accesso, un preventivo) | Di solito sì |

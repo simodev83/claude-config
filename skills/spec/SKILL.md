@@ -20,7 +20,7 @@ La spec è il **contratto**: dice esattamente cosa deve fare la funzione e come 
 
 La spec **sintetizza** quello che è già stato deciso. Non ripetere le domande dei requisiti.
 
-- Se mancano i requisiti e la funzione è piccola, bastano poche domande mirate (al massimo 5, ognuna con il tuo consiglio).
+- Se mancano i requisiti e la funzione è piccola, bastano poche domande mirate, poste una alla volta come nel passo 2 della skill `requisiti`. Se dalle risposte ne nascono più di 5, fermati e proponi `/requisiti`.
 - Se mancano i requisiti e la funzione è grande o vaga, fermati e proponi prima `/requisiti`.
 - Se trovi una contraddizione tra requisiti e codice esistente, chiedi all'utente come risolverla.
 

@@ -8,6 +8,14 @@
 - Quando proponi più opzioni, ordinale solo per la qualità del risultato: correttezza, sicurezza, manutenibilità, prestazioni, facilità di gestione. Tempo di realizzazione, costi e fatica di migrazione scrivili come avvertenze, mai come criteri per l'ordine.
 - Includi sempre anche l'opzione "da zero": come lo progetteremmo oggi partendo da un foglio bianco, con i cambiamenti che comporterebbe. Allarga il lavoro oltre la richiesta solo se l'utente sceglie quell'opzione.
 
+## Interviste
+
+Valgono ogni volta che fai domande all'utente per arrivare a una decisione: requisiti, mappa, spec o una discussione qualsiasi.
+
+- Una domanda alla volta: un solo messaggio, oppure una sola domanda per chiamata allo strumento di domanda, sempre con il tuo consiglio. Mai un elenco di domande insieme.
+- Passa alla domanda successiva solo quando sulla precedente c'è una soluzione condivisa. Se l'utente ha dubbi, obietta o fa una controdomanda, resta su quella domanda: spiega, proponi alternative e chiedi di nuovo finché siete d'accordo.
+- Se una risposta apre una questione nuova, aggiungila all'albero delle decisioni e continua finché ogni ramo è chiuso. Non lasciare questioni aperte, a meno che l'utente scelga esplicitamente di rimandarne una.
+
 ## Qualità del codice
 
 - Non disattivare mai una regola del linter e non aggiungere eccezioni o soppressioni (`eslint-disable`, `# noqa`, `@ts-ignore`, `# type: ignore` e simili). Le eccezioni le concede solo l'utente, con un motivo e una scadenza.

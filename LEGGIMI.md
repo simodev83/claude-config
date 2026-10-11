@@ -5,7 +5,7 @@ La mia configurazione di Claude Code: questa cartella è `~/.claude`. Contiene i
 | Skill | Comando | Cosa fa |
 |---|---|---|
 | workflow | `/workflow <tema>` | Il regista: esegue requisiti → spec → piano → implementa → guardia, con approvazione dopo ogni fase di decisione |
-| requisiti | `/requisiti <tema>` | Interrogatorio ad albero delle decisioni; modalità mappa per i lavori su più sessioni |
+| requisiti | `/requisiti <tema>` | Interrogatorio ad albero delle decisioni, una domanda alla volta; modalità mappa per i lavori su più sessioni |
 | spec | `/spec <funzione>` | Specifica con storie utente, casi limite e criteri di accettazione |
 | piano | `/piano <funzione>` | Passi piccoli e verificabili raggruppati in strati, scelta dello stack, preparazione del worktree |
 | implementa | `/implementa <funzione>` | Il regista della costruzione: worktree, un costruttore per passo, semplificazione e revisione per strato, collaudo finale, una pull request per strato |

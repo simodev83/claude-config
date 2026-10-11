@@ -24,22 +24,24 @@ Valuta la dimensione del lavoro e **proponi** una modalità, con una riga di mot
 - **Interrogatorio** (una sessione): il lavoro si può discutere tutto in una conversazione. È il caso normale: una funzione, un progetto piccolo o medio.
 - **Mappa** (più sessioni): il lavoro è troppo grande o nebbioso per una conversazione. Per esempio: un sistema nuovo intero, una migrazione, un progetto dove non si vede ancora la strada. In questo caso leggi [mappa.md](mappa.md) e segui quello al posto dei passi seguenti.
 
-## Passo 2: l'interrogatorio a round
+## Passo 2: l'interrogatorio, una domanda alla volta
 
 Costruisci mentalmente l'**albero delle decisioni**: ogni decisione apre quelle che dipendono da lei. La **frontiera** sono le decisioni che si possono chiedere adesso, perché tutto ciò da cui dipendono è già deciso.
 
-A ogni round:
+Segui le regole del `CLAUDE.md` sulle interviste. A ogni giro:
 
-1. Poni **tutte** le domande della frontiera, numerate, in questo formato:
+1. Dalla frontiera scegli **una sola** domanda: quella che sblocca più decisioni o che pesa di più sul risultato.
+2. Ponila in questo formato, numerando le domande in ordine per tutto l'interrogatorio:
 
    ```
    **D1 – <titolo breve>**
    <la domanda, con le opzioni se ci sono>
    → Consiglio: <la tua risposta consigliata e perché, in una o due righe>
+   (Ancora aperte: <quante domande restano nella frontiera adesso>)
    ```
 
-2. Aspetta le risposte. Poi ricalcola la frontiera: le decisioni prese sbloccano quelle successive.
-3. Una domanda che dipende da un'altra ancora aperta **nello stesso round** va al round dopo.
+3. Aspetta la risposta. Se l'utente non è d'accordo, ha dubbi o chiede chiarimenti, resta sulla stessa domanda: spiega, proponi alternative e richiedi, finché arrivate a una soluzione condivisa. Solo allora la decisione è presa.
+4. Ricalcola la frontiera: la decisione presa sblocca quelle che dipendevano da lei, e le questioni nuove emerse dalla discussione entrano nell'albero come nuove domande.
 
 Regole:
 
@@ -48,9 +50,8 @@ Regole:
 - **Spiega i termini tecnici** in parole semplici la prima volta che li usi: l'utente potrebbe non conoscerli.
 - **Copri tutti i rami**: chi usa il sistema, cosa deve fare, cosa succede quando qualcosa va storto (errori, dati mancanti, casi limite), dati e privacy, vincoli (tempi, costi, tecnologie imposte), cosa è **fuori perimetro**.
 - **Niente silenzi**: se stai per dare qualcosa per scontato, trasformalo in una domanda con il tuo consiglio.
-- Round lunghi stancano: se la frontiera ha più di 8 domande, poni le 8 più importanti e tieni le altre per il round dopo.
 
-L'interrogatorio finisce quando la frontiera è **vuota**: ogni ramo è stato percorso e non resta nulla di presunto. Allora riepiloga le decisioni in una lista breve e chiedi: "È questa la comprensione condivisa?". Non salvare nulla prima della conferma.
+L'interrogatorio finisce quando la frontiera è **vuota**: ogni ramo è stato percorso, nessuna questione è rimasta aperta e non resta nulla di presunto. Allora riepiloga le decisioni in una lista breve e chiedi: "È questa la comprensione condivisa?". Non salvare nulla prima della conferma.
 
 ## Passo 3: salva i requisiti
 
