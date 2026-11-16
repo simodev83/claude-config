@@ -47,7 +47,7 @@ Ogni tanto, per fare ordine:
 - `CLAUDE.md`: le regole valide in ogni progetto (lingua, account GitHub, qualità del codice, docstring e commenti).
 - `rules/`: regole valide in ogni progetto che riguardano un solo strumento o momento del lavoro, un file per tema; Claude Code le carica sempre, come il `CLAUDE.md`. La crea `/rifletti` quando serve.
 - `settings.json`: modello, hook e barra di stato.
-- `hooks/github-account.sh`: a ogni avvio di sessione dice quale account GitHub è attivo.
+- `hooks/github-account.sh`: a ogni avvio di sessione fa lavorare `gh` e `git` con l'account GitHub dichiarato dal repo, se ce n'è uno, e dice quale account è in uso (vedi "Un account diverso per un repo").
 - `statusline-command.sh`: la barra di stato in fondo al terminale.
 - `skills/` e `agents/`: il workflow, `rifletti` e `cronometro`.
 
@@ -102,6 +102,19 @@ git checkout -f -t origin/main
 Per aggiornare: `git -C ~/.claude pull`.
 
 Le skill si modificano direttamente qui, in `~/.claude/skills`: non c'è più uno script di installazione.
+
+## Un account diverso per un repo
+
+L'account attivo di `gh` (di norma simodev83) vale per tutti i repo. Un repo che deve usare l'altro account lo dichiara una volta sola, nella propria configurazione di git, con questi due comandi lanciati nella sua cartella:
+
+```bash
+git config --local --add credential.https://github.com.helper ''
+git config --local --add credential.https://github.com.helper '!f() { test "$1" = get || exit 0; echo username=SimoneBEN324; echo "password=$(gh auth token --hostname github.com --user SimoneBEN324)"; }; f'
+```
+
+Da quel momento `git push` e `git pull` di quel repo usano l'account dichiarato, anche fuori da Claude. All'avvio di ogni sessione `hooks/github-account.sh` legge la stessa dichiarazione e imposta `GH_TOKEN` per la sessione, così anche `gh` (issue, pull request) usa quell'account. L'account attivo di `gh` non cambia, quindi le sessioni aperte negli altri progetti non ne risentono.
+
+La dichiarazione sta in `.git/config`, che non entra nei commit: va ripetuta su ogni computer dove si clona il repo. Non servono hook nel progetto.
 
 ## Meno richieste di permesso
 
