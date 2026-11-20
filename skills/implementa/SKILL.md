@@ -1,6 +1,6 @@
 ---
 name: implementa
-description: Il regista della costruzione - a partire da spec e piano apre il worktree, fa costruire ogni passo a un agente costruttore e rilancia i test, poi per ogni strato fa semplificare e rivedere il codice da agenti separati, fa il collaudo finale criterio per criterio e apre una pull request per strato, che l'utente unirà. Usala solo quando l'utente scrive /implementa o quando la skill workflow la richiama.
+description: Il regista della costruzione - a partire da spec e piano apre il worktree, fa costruire ogni passo a un agente costruttore e rilancia i test, poi per ogni strato fa scrivere i test dei casi limite, semplificare e rivedere il codice da agenti separati, fa il collaudo finale criterio per criterio e caso per caso e apre una pull request per strato, che l'utente unirà. Usala solo quando l'utente scrive /implementa o quando la skill workflow la richiama.
 argument-hint: "<funzione>"
 ---
 
@@ -12,7 +12,7 @@ Funzione: $ARGUMENTS (se è vuoto, chiedi quale funzione costruire).
 
 Il lavoro è finito solo quando **ogni criterio di accettazione della spec è verificato** e il lavoro è consegnato (pull request aperte, o ramo pronto). Non prima.
 
-**Tu sei il regista: non scrivi codice del progetto**, nemmeno una piccola correzione. Il codice lo scrivono gli agenti: `costruttore` (un passo, sempre in TDD), `semplificatore` (riordino di uno strato), mentre il `revisore` lo esamina in sola lettura. Tu prepari il worktree, gestisci rami e pila, lanci gli agenti uno alla volta, rilanci i test dopo ognuno, tieni aggiornati archivio e stato, e consegni.
+**Tu sei il regista: non scrivi codice del progetto**, nemmeno una piccola correzione. Il codice lo scrivono gli agenti: `costruttore` (un passo, sempre in TDD), `collaudatore` (test dei casi limite di uno strato, partendo solo dalla spec), `semplificatore` (riordino di uno strato), mentre il `revisore` lo esamina in sola lettura. Tu correggi soltanto la spec, quando l'utente risponde ai casi scoperti dal collaudatore. Tu prepari il worktree, gestisci rami e pila, lanci gli agenti uno alla volta, rilanci i test dopo ognuno, tieni aggiornati archivio e stato, e consegni.
 
 L'unica eccezione sono i conflitti di `gh stack rebase` (sezione 9 della skill `archivio`): li risolvi tu solo quando basta tenere una delle due versioni o entrambe, senza scrivere logica nuova, e poi rilanci i test. Altrimenti `gh stack rebase --abort` e ti fermi.
 
@@ -49,6 +49,7 @@ In corso: <cosa stai facendo e su quale ramo, per esempio "correzioni del collau
 - Base: <ramo dello strato sotto | hash>
 - Passi: <numeri dei passi del piano che contiene>
 - Passi fatti: <numeri>
+- Collaudatore: da fare | casi scoperti | correzioni | fatto
 - Semplificazione: da fare | fatta | niente da fare
 - Revisione: da fare | fatta
 - Correzioni: da fare | fatte | nessuna
@@ -59,9 +60,10 @@ In corso: <cosa stai facendo e su quale ramo, per esempio "correzioni del collau
 
 ## Note per la consegna
 - Scostamenti e pezzi senza test: <per passo, dai rapporti dei costruttori>
+- Casi limite: <per strato, la tabella del collaudatore, i casi scoperti con le risposte dell'utente, i difetti corretti>
 - Semplificazione: <per strato, dal rapporto del semplificatore>
 - Revisione: <per strato, problemi corretti e problemi segnalati ma non cambiati, con il motivo>
-- Collaudo: <la tabella dei criteri, aggiornata dopo le correzioni>
+- Collaudo: <le tabelle dei criteri e dei casi limite, aggiornate dopo le correzioni>
 ```
 
 Su strati, rami e passi il file di stato è la fonte autorevole: dopo una divisione (punto b.5) vale lui, non il piano.
@@ -118,19 +120,59 @@ Per ogni passo dello strato, in ordine:
 4. **Registra il passo:**
    - **Issues**: commenta l'issue del passo con "Fatto nel commit «Passo N – <titolo>» sul ramo <ramo>". Non chiuderla: si chiuderà da sola con il merge.
    - **Locale**, o **File senza git**: spunta il passo nella checklist del piano.
-   - **File con git**: la checklist si aggiorna alla chiusura dello strato (punto e).
+   - **File con git**: la checklist si aggiorna alla chiusura dello strato (punto f).
    - Aggiorna il file di stato, con gli scostamenti e i pezzi senza test del rapporto nelle note per la consegna.
 
-5. **Misura lo strato** (solo con git): `git diff --shortstat <base>...HEAD`; le righe sono inserimenti più cancellazioni. Se superano **300** e restano passi in questo strato, **dividilo**: lo strato si chiude qui (punti c, d, e) e i passi rimasti formano un nuovo strato subito sopra, con titolo "<titolo> (seguito)".
+5. **Misura lo strato** (solo con git): `git diff --shortstat <base>...HEAD`; le righe sono inserimenti più cancellazioni. Se superano **300** e restano passi in questo strato, **dividilo**: lo strato si chiude qui (punti c, d, e, f) e i passi rimasti formano un nuovo strato subito sopra, con titolo "<titolo> (seguito)".
    - Consegna GitHub: il nuovo strato prende il ramo con il numero successivo; gli strati non ancora aperti scalano di un numero, e così i loro rami.
    - Consegna git locale: cambia solo il raggruppamento, sullo stesso ramo.
    - Scrivi la nuova suddivisione nel file di stato e annota la divisione: la dirai nel rapporto finale. Non riscrivere il piano.
 
-### c. Semplificazione
+### c. Collaudo dei casi limite
 
-Con tutti i passi dello strato fatti, lancia un `semplificatore` (`subagent_type: "semplificatore"`) con cartella, ramo, base dello strato, spec e comando di test (senza git, l'elenco dei file dello strato). Al rapporto, ripeti i controlli del punto b.3, ma senza cercare un commit `Passo`: se ha semplificato, c'è un commit `Semplificazione dello strato`. Riporta l'esito nel file di stato.
+Con tutti i passi dello strato fatti, lancia un `collaudatore` (`subagent_type: "collaudatore"`) e aspetta il suo rapporto. Nell'incarico scrivi:
 
-### d. Revisione dello strato
+```text
+Spec: <numero dell'issue o percorso assoluto>
+Strato: N – <titolo>
+Criteri coperti: <numeri dei criteri dei passi dello strato>
+Punti di test: <dalle righe Verifica dei passi dello strato>
+Cartella di lavoro: <percorso del worktree, o cartella del progetto senza git>
+Ramo: <ramo dello strato>
+Comando di test: <comando>
+```
+
+Senza git, al posto del ramo scrivi "Senza git: niente commit".
+
+**Controlla tu il rapporto**, come al punto b.3:
+
+- `git status --porcelain` non stampa nulla;
+- i commit `Collaudo dello strato N` toccano solo file di test (`git show --stat <hash>`);
+- rilancia il comando di test: falliscono solo i test elencati nei Difetti.
+
+Senza git, rilancia solo il comando di test.
+
+Se qualcosa non torna, riprendi lo stesso agente con SendMessage e l'uscita del comando; dopo due riprese senza risultato, fermati. Se File letti mostra che ha aperto il corpo di una funzione o i test del costruttore, il collaudo non è più indipendente: annulla i suoi commit con `git reset --keep <commit prima del collaudo>` e lancia un nuovo `collaudatore`, una volta sola. Se succede di nuovo, tieni il suo lavoro e scrivilo nelle note per la consegna.
+
+Poi, secondo l'esito:
+
+1. **`CASI SCOPERTI`**: la spec non dice cosa deve succedere, ed è una decisione dell'utente. Fermati e chiedigli i casi **uno alla volta**, ognuno in parole semplici con le opzioni e il consiglio del collaudatore, come nelle interviste del `CLAUDE.md`. Aggiungi ogni risposta alla sezione "Casi limite ed errori" della spec, come `- <situazione> → <comportamento atteso>`:
+   - **Issues**: leggi il corpo con `gh issue view <n> --json body -q .body`, aggiungi le righe e salvalo con `gh issue edit <n> --body-file <file>`;
+   - **File con git**: la spec è nel worktree; modificala e fai il commit del solo file: `Spec: casi limite dello strato N`;
+   - **Locale**, o **senza git**: modifica il file della spec.
+
+   Poi riprendi lo stesso `collaudatore` con SendMessage e le risposte (se non è più raggiungibile, lancia un nuovo `collaudatore` con l'incarico qui sopra e le risposte), ripeti i controlli e tratta di nuovo il suo esito.
+2. **`DIFETTI`**: giro di correzioni del collaudo. Riprendi con SendMessage l'ultimo `costruttore` dello strato, oppure lancia un nuovo `costruttore` con l'incarico del punto b.1, scrivendo "Passo: Giro di correzioni del collaudo" seguito da ogni difetto (test, atteso, ottenuto), i file di test del collaudatore e, come criteri e punti di test, quelli dello strato. Al rapporto, ripeti i controlli del punto b.3, cercando i commit `Correzione: …`, e controlla che `git diff <ultimo commit del collaudo>..HEAD -- <file di test del collaudatore>` non stampi nulla (senza git, che i file di test del collaudatore non siano tra i File toccati).
+   - Se il costruttore risponde `BLOCCATO` perché ritiene sbagliato un test del collaudatore: se la spec dice chiaramente che il test chiede altro, riprendi il `collaudatore` con la spiegazione, perché corregga il test (commit `Collaudo dello strato N: test corretto`); se la spec non è chiara, è un caso scoperto: chiedi all'utente come al punto 1.
+3. **`VERDE`**: niente da correggere.
+
+Scrivi nel file di stato la tabella dei casi provati, i casi scoperti con le risposte dell'utente e i difetti corretti. Il collaudo dello strato si fa **una volta sola**: dopo le correzioni non rilanciare il collaudatore, se non per i casi scoperti.
+
+### d. Semplificazione
+
+Dopo il collaudo dei casi limite, lancia un `semplificatore` (`subagent_type: "semplificatore"`) con cartella, ramo, base dello strato, spec e comando di test (senza git, l'elenco dei file dello strato). Al rapporto, ripeti i controlli del punto b.3, ma senza cercare un commit `Passo`: se ha semplificato, c'è un commit `Semplificazione dello strato`. Riporta l'esito nel file di stato.
+
+### e. Revisione dello strato
 
 Lancia un `revisore` (`subagent_type: "revisore"`) in modalità **consegna**, con la spec, la cartella, l'intervallo `<base>..HEAD` (senza git, l'elenco dei file dello strato) e il comando di test.
 
@@ -139,22 +181,22 @@ Lancia un `revisore` (`subagent_type: "revisore"`) in modalità **consegna**, co
 - Scrivi nel file di stato i problemi corretti e quelli segnalati ma non cambiati, con il motivo.
 - La revisione si fa **una volta sola**: non rilanciare il revisore dopo le correzioni.
 
-### e. Chiusura dello strato
+### f. Chiusura dello strato
 
 - **File con git**: spunta i passi dello strato nella checklist del piano, nel worktree, e fai il commit del solo file del piano: `Piano: strato N fatto`.
 - Aggiorna il file di stato.
 
 ## Passo 3: collaudo finale
 
-Con tutti gli strati chiusi (con più strati e consegna GitHub, dalla cima della pila: `gh stack top`), lancia un `revisore` in modalità **collaudo finale**, con la spec, la cartella, l'intervallo `<base del primo strato>..HEAD` (senza git, l'elenco di tutti i file) e il comando di test. Scrivi la tabella dei criteri nel file di stato.
+Con tutti gli strati chiusi (con più strati e consegna GitHub, dalla cima della pila: `gh stack top`), lancia un `revisore` in modalità **collaudo finale**, con la spec, la cartella, l'intervallo `<base del primo strato>..HEAD` (senza git, l'elenco di tutti i file) e il comando di test. Scrivi le tabelle dei criteri e dei casi limite nel file di stato.
 
 - **Si può consegnare** → passo 4.
-- **Non ancora** → correggi i criteri ❌ e i problemi bloccanti e importanti, in un giro solo:
-  1. Trova lo strato a cui appartiene ogni correzione: quello del passo che copre il criterio, o quello che ha introdotto il codice da correggere. Raggruppa le correzioni per strato.
+- **Non ancora** → correggi i criteri e i casi limite ❌ e i problemi bloccanti e importanti, in un giro solo:
+  1. Trova lo strato a cui appartiene ogni correzione: quello del passo che copre il criterio o il caso limite, o quello che ha introdotto il codice da correggere. Raggruppa le correzioni per strato.
   2. Procedi strato per strato, dal basso verso l'alto. Con più strati e consegna GitHub, spostati sullo strato con `gh stack checkout <ramo>`; altrimenti resta in cima. Scrivi in "In corso" su quale strato stai correggendo.
-  3. Lancia un nuovo `costruttore` per quello strato, con l'incarico del giro di correzioni del punto d e le sue correzioni. Al rapporto, ripeti i controlli del punto b.3, cercando i commit `Correzione: …`.
+  3. Lancia un nuovo `costruttore` per quello strato, con l'incarico del giro di correzioni del punto e e le sue correzioni. Al rapporto, ripeti i controlli del punto b.3, cercando i commit `Correzione: …`.
   4. Con più strati e consegna GitHub, dopo una correzione su uno strato sotto la cima: `gh stack rebase --upstack --no-trunk`, test su ogni strato sopra, poi `gh stack top` (sezione 9 della skill `archivio`).
-  5. Il collaudo non si ripete: per ogni criterio che era ❌ cerca tu la prova, lanciando il test che ora lo verifica, e aggiorna la tabella nel file di stato. Se un criterio resta senza prova, fermati e spiega all'utente cosa blocca.
+  5. Il collaudo non si ripete: per ogni criterio o caso limite che era ❌ cerca tu la prova, lanciando il test che ora lo verifica, e aggiorna le tabelle nel file di stato. Se un criterio o un caso limite resta senza prova, fermati e spiega all'utente cosa blocca.
 
 ## Passo 4: consegna
 
@@ -174,6 +216,9 @@ Segui la sezione 10 ("Consegna del lavoro") della skill `archivio`, compreso l'a
 
 ## Criteri di accettazione
 <le righe della tabella del collaudo per i criteri coperti da questo strato; nell'ultimo strato la tabella intera>
+
+## Casi limite
+<la tabella del collaudatore di questo strato e i casi scoperti con la tua risposta; nell'ultimo strato anche la tabella dei casi limite del collaudo finale>
 
 ## Revisione automatica
 - Semplificato: <elenco, o "niente da fare">
@@ -207,7 +252,7 @@ Aggiorna il file di stato con la consegna fatta e i collegamenti.
 Dai all'utente, in breve e in parole semplici:
 
 - i collegamenti alle pull request, nell'ordine in cui rileggerle e unirle (dal basso), oppure il nome del ramo, oppure l'elenco dei file senza git;
-- la tabella dei criteri;
+- le tabelle dei criteri e dei casi limite, con i casi scoperti a cui ha risposto e i difetti trovati dal collaudatore;
 - cosa hanno fatto semplificazione e revisione, cosa è stato corretto e cosa è stato segnalato senza cambiarlo;
 - gli strati divisi durante il lavoro perché erano cresciuti troppo, se ce ne sono;
 - i pezzi senza test e come sono stati controllati;
@@ -227,8 +272,9 @@ Dopo l'approvazione del piano ti fermi a chiedere **solo** in questi casi:
 - ramo di uno strato già esistente;
 - preparazione del worktree fallita: file locale mancante o non escluso, installazione delle dipendenze fallita, test rossi prima di iniziare;
 - un `costruttore` bloccato su una decisione che spetta all'utente;
+- casi scoperti dal `collaudatore`, o un suo test che il costruttore ritiene sbagliato quando la spec non è chiara;
 - un passo che si rivela sbagliato o impossibile: spiega cosa è emerso e cosa proponi, senza riscrivere il piano da sola;
 - test ancora rossi dopo due riprese dello stesso agente;
 - un conflitto di `gh stack rebase` che non si risolve senza scrivere logica nuova;
-- un criterio ancora senza prova dopo il giro di correzioni del collaudo;
+- un criterio o un caso limite ancora senza prova dopo il giro di correzioni del collaudo;
 - un push rifiutato o un errore di permessi di `gh`.

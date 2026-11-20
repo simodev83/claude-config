@@ -8,7 +8,7 @@ La mia configurazione di Claude Code: questa cartella è `~/.claude`. Contiene i
 | requisiti | `/requisiti <tema>` | Interrogatorio ad albero delle decisioni, una domanda alla volta; modalità mappa per i lavori su più sessioni |
 | spec | `/spec <funzione>` | Specifica con storie utente, casi limite e criteri di accettazione |
 | piano | `/piano <funzione>` | Passi piccoli e verificabili raggruppati in strati, scelta dello stack, preparazione del worktree |
-| implementa | `/implementa <funzione>` | Il regista della costruzione: worktree, un costruttore per passo, semplificazione e revisione per strato, collaudo finale, una pull request per strato |
+| implementa | `/implementa <funzione>` | Il regista della costruzione: worktree, un costruttore per passo, test dei casi limite, semplificazione e revisione per strato, collaudo finale, una pull request per strato |
 | tdd | `/tdd <obiettivo>` | Ciclo rosso → verde, sempre; la usa il costruttore per ogni passo, e da sola per un bug o una piccola modifica |
 | guardia | `/guardia [numero PR]` | Sorveglia le pull request fino al merge: risponde ai commenti, fa correggere, aggiorna i rami, poi chiude il worktree. Parte da sola alla consegna; `/guardia` la riprende in una nuova sessione |
 | rifletti | `/rifletti [numero PR]` | Rilegge le memorie di tutti i progetti e ti propone quali diventano regole globali (nel `CLAUDE.md` o in `rules/`); apre la pull request, la guardia la segue e dopo il merge cancella le memorie superate. Va lanciata con Claude aperto in `~/.claude` |
@@ -22,8 +22,9 @@ Aiutanti che le skill lanciano da sole, ognuno con il suo compito e il suo model
 | Agente | Modello e impegno | Cosa fa |
 |---|---|---|
 | costruttore | Opus, medio | Costruisce un passo del piano in TDD, con un commit; se si blocca restituisce una domanda per l'utente |
+| collaudatore | Opus, alto | Scrive i test dei casi limite di uno strato leggendo solo la spec, senza guardare il codice; i casi che la spec non copre te li fa decidere |
 | semplificatore | Opus, medio | Riordina il codice di uno strato senza cambiarne il comportamento, prima della revisione |
-| revisore | Opus, alto | Sola lettura: revisione di uno strato, oppure collaudo finale con tabella dei criteri e verdetto |
+| revisore | Opus, alto | Sola lettura: revisione di uno strato, oppure collaudo finale con le tabelle dei criteri e dei casi limite e il verdetto |
 | ricercatore | Sonnet, basso | Risponde a una domanda su una libreria leggendo solo la documentazione ufficiale, con citazione |
 
 ## Come si usa
@@ -32,7 +33,7 @@ In un progetto scrivi `/workflow <cosa vuoi costruire>`. Claude:
 
 1. ti fa domande finché è chiaro cosa serve (requisiti) e scrive il contratto della funzione, con i criteri per dire che funziona (spec);
 2. divide il lavoro in passi piccoli, raggruppati in strati: ogni strato diventerà una pull request da rileggere (piano);
-3. dopo il tuo ok su questi tre documenti costruisce da solo, in una cartella a parte (worktree) che non tocca il tuo lavoro: un agente per passo, sempre con il test prima del codice, poi riordino e revisione di ogni strato e un collaudo finale criterio per criterio;
+3. dopo il tuo ok su questi tre documenti costruisce da solo, in una cartella a parte (worktree) che non tocca il tuo lavoro: un agente per passo, sempre con il test prima del codice; poi, per ogni strato, un secondo agente che cerca i casi limite leggendo solo la spec (se trova un caso che la spec non copre si ferma e ti chiede cosa deve succedere), il riordino e la revisione; alla fine un collaudo criterio per criterio e caso per caso;
 4. se il progetto è su GitHub apre le pull request e resta a sorvegliarle: risponde ai commenti e corregge finché non le unisci tu; altrimenti lascia un ramo pronto da unire.
 
 Si ferma a chiederti qualcosa solo quando serve una tua decisione. Per un bug basta `/tdd <cosa non funziona>`.
