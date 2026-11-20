@@ -14,7 +14,7 @@ Le sezioni 10 e 11 si scrivono da capo per ogni lavoro. Tutte le altre sono fiss
 - **Lavoro o orologio**: una cifra che somma il tempo degli agenti lo dice, e lo dice anche una cifra che conta una volta sola gli agenti sovrapposti.
 - **Testo**: uno o due paragrafi brevi per sezione: prima il risultato, cifre dalle misure, citazioni di una riga secondo la regola di pubblicazione della skill.
 - **Grafici**: ognuno con un titolo, una riga su come leggerlo, una legenda, il valore al passaggio del mouse o al focus, e una vista a tabella degli stessi dati.
-- **Colori**: lo stesso significato in ogni grafico: un colore per attore (l'utente, il regista, ogni ruolo di agente: `costruttore`, `semplificatore`, `revisore`, `ricercatore`), un grigio per l'attesa dell'utente, un altro per l'attesa di altro, il tratteggio per un giro ripreso. Le attività usano una seconda tavolozza: un colore per il ragionamento del modello, uno per ogni attività nominata, grigio per il resto.
+- **Colori**: lo stesso significato in ogni grafico: un colore per attore (l'utente, il regista, ogni ruolo di agente: `costruttore`, `collaudatore`, `semplificatore`, `revisore`, `ricercatore`), un grigio per l'attesa dell'utente, un altro per l'attesa di altro, il tratteggio per un giro ripreso. Le attività usano una seconda tavolozza: un colore per il ragionamento del modello, uno per ogni attività nominata, grigio per il resto.
 
 ## 1. Intestazione
 
